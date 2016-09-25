@@ -38,12 +38,12 @@ public class LevelGenerator : MonoBehaviour
     private void InitializeTables()
     {
         shapes = new List<GameObject>();
-        shapes.Add(shape1);
-        shapes.Add(shape2);
-        shapes.Add(shape3);
-        /*shapes[3] = shape4;
-        shapes[4] = shape5;
-        shapes[5] = shape6;*/
+        shapes.Add( shape1);
+        shapes.Add( shape2);
+        shapes.Add( shape3);
+        shapes.Add( shape4);
+        shapes.Add( shape5);
+        //shapes[5] = shape6;
 
         indexes = new int[19][];
         for( int i = 0; i < 19; i++)
@@ -67,7 +67,7 @@ public class LevelGenerator : MonoBehaviour
         int desiredBlock = -1;
 
         bool good = false;
-        desiredBlock = Random.Range(0, 2);
+        desiredBlock = Random.Range(0, 4);
         //Si on à un bloc qui est bon ou pas
         /*while( !good)
         {
