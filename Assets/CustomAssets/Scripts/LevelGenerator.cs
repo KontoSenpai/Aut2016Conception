@@ -32,7 +32,6 @@ public class LevelGenerator : MonoBehaviour
 	// Update is called once per frame
 	void Update ()
     {
-
 	}
 
     private void InitializeTables()
@@ -69,7 +68,6 @@ public class LevelGenerator : MonoBehaviour
         int desiredBlock = -1;
         List<int> indexTried = new List<int>();
         
-
         if (placedShapes < numberOfShapes)
         {
             do
@@ -84,12 +82,20 @@ public class LevelGenerator : MonoBehaviour
                 // Now we gonna attemp to insertBlocks in the grid and thus, world space
                 do
                 {
-                    desiredBlock = GetRandomNumberWithExclusion(indexTried);
-                    blockFit = BlockFit(shapes[desiredBlock], desiredPos);
-                    if ( !blockFit && indexTried.Count == shapes.Count)
+                    desiredBlock = GetBlockIndex(indexTried);
+                    if (desiredBlock == -1)
                     {
-                        print("0..I don't fit :(");
+                        print("0..I don't fit, no block left remaining");
                         rejected = true;
+                    }
+                    else
+                    {
+                        blockFit = BlockFit(shapes[desiredBlock], desiredPos);
+                        if (!blockFit)
+                        {
+                            print("0..I don't fit, blocks can be still tried");
+                            indexTried.Add(desiredBlock);
+                        }
                     }
                 }
                 while (!blockFit || rejected);
@@ -136,17 +142,70 @@ public class LevelGenerator : MonoBehaviour
     // Functions that help to structure and read the possibilities
     //
     //
-    private int GetRandomNumberWithExclusion(List<int> alreadyTried)
+    private int GetBlockIndex(List<int> alreadyTried)
     {
         print("1.Getting a random value");
         int desiredBlock = Random.Range(0, 4);
         List<int> toasted = new List<int>();
-        bool noBlock = false;
+        bool rejected = false;
 
-        if (alreadyTried.Count == 0)
-            return desiredBlock;
+        do
+        {
+            if (alreadyTried.Count == 0)
+            {
+                print("1..No block was previously tested");
+                return desiredBlock;
+            }
+            else
+            {
+                if (toasted.Count == alreadyTried.Count)
+                {
+                    print("1..Tried all possibilities, can't add at this position");
+                    rejected = true;
+                }
+                else
+                {
+                    if (alreadyTried.IndexOf(desiredBlock) == -1)
+                    {
+                        print("1..No correspondance in already tested blocks");
+                        return desiredBlock;
+                    }
+                    else
+                    {
+                        print("1..The block already has been tried, rerolling for a new value");
+                        toasted.Add(desiredBlock);
+                        desiredBlock = Random.Range(0, 4);
+                    }
+                }
+            }
+        }
+        while (rejected == false);
+        return -1;
+    }
+
+    private void FillTheGrid(List<List<int>> objPos, Vector3 refVector)
+    {
+        for (int i = 0; i < objPos.Count; i++)
+        {
+            List<int> grood = objPos[i];
+            for (int j = 0; j < grood.Count; j++)
+            {
+                indexes[(int)refVector.x + i][(int)refVector.y + j] = grood[j];
+            }
+        }
+    }
+
+
+    private int Toast(List<int> alreadyTried)
+    {
+        return 0;
+        /*
         else
         {
+            if( alreadyTried.IndexOf( desiredBlock) == -1)
+            {
+
+            }
             do
             {
                 for (int i = 0; i < alreadyTried.Count; i++)
@@ -156,7 +215,7 @@ public class LevelGenerator : MonoBehaviour
                         print("1..Value already tested");
                         break;
                     }
-                    else if(i == alreadyTried.Count)
+                    else if (i == alreadyTried.Count)
                     {
                         print("1..No similar value was found");
                         return desiredBlock;
@@ -176,19 +235,6 @@ public class LevelGenerator : MonoBehaviour
             }
             while (!noBlock);
         }
-        return -1;
+        return -1;*/
     }
-
-    private void FillTheGrid(List<List<int>> objPos, Vector3 refVector)
-    {
-        for (int i = 0; i < objPos.Count; i++)
-        {
-            List<int> grood = objPos[i];
-            for (int j = 0; j < grood.Count; j++)
-            {
-                indexes[(int)refVector.x + i][(int)refVector.y + j] = grood[j];
-            }
-        }
-    }
-
 }
