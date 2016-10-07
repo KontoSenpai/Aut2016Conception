@@ -132,7 +132,6 @@ public class Shape : MonoBehaviour
 
     public List<List<int>> GetCollision()
     {
-        print("TYPE" + shapeType);
         switch (shapeType)
         {
             case 0:

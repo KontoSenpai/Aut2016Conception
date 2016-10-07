@@ -57,50 +57,22 @@ public class LevelGenerator : MonoBehaviour
 
     private bool CompleteLevel()
     {
-        // Know if the process of adding a block ended with 
-        bool blockFit = false;
-        bool rejected = false;
-
         //The position in the scene( and in the grid) requested
         Vector3 desiredPos = new Vector3();
-
-        //Control of attempts to get the fitting block
-        int desiredBlock = -1;
         List<int> indexTried = new List<int>();
-        
         if (placedShapes < numberOfShapes)
         {
             do
             {
-                rejected = false;
                 do
                 {
+                    indexTried.Clear();
                     print("0.Creating a vector");
                     desiredPos = new Vector3(Random.Range(2, 17), Random.Range(5, 12), 0);
                 }
                 while (indexes[(int)desiredPos.x][(int)desiredPos.y] != 0);
-                // Now we gonna attemp to insertBlocks in the grid and thus, world space
-                do
-                {
-                    desiredBlock = GetBlockIndex(indexTried);
-                    if (desiredBlock == -1)
-                    {
-                        print("0..I don't fit, no block left remaining");
-                        rejected = true;
-                    }
-                    else
-                    {
-                        blockFit = BlockFit(shapes[desiredBlock], desiredPos);
-                        if (!blockFit)
-                        {
-                            print("0..I don't fit, blocks can be still tried");
-                            indexTried.Add(desiredBlock);
-                        }
-                    }
-                }
-                while (!blockFit || rejected);
             }
-            while (rejected);
+            while (!PlaceShape(desiredPos, indexTried));
             placedShapes++;
             CompleteLevel();
         }
@@ -132,6 +104,7 @@ public class LevelGenerator : MonoBehaviour
                 }
             }
         }
+        print("2..I fit");
         FillTheGrid( platformCollisions, refVector);
         platform.transform.position = refVector;
         return true;
@@ -148,7 +121,6 @@ public class LevelGenerator : MonoBehaviour
         int desiredBlock = Random.Range(0, 4);
         List<int> toasted = new List<int>();
         bool rejected = false;
-
         do
         {
             if (alreadyTried.Count == 0)
@@ -195,46 +167,32 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
-
-    private int Toast(List<int> alreadyTried)
+    private bool PlaceShape(Vector3 desiredPosition, List<int> indexTried)
     {
-        return 0;
-        /*
-        else
+        if (indexTried.Count <= shapes.Count)
         {
-            if( alreadyTried.IndexOf( desiredBlock) == -1)
+            int desiredBlock = GetBlockIndex(indexTried);
+            if (desiredBlock == -1)
             {
-
+                print("0..I don't fit, no block left remaining");
+                return false;
             }
-            do
+            else
             {
-                for (int i = 0; i < alreadyTried.Count; i++)
-                {
-                    if (desiredBlock == alreadyTried[i])
-                    {
-                        print("1..Value already tested");
-                        break;
-                    }
-                    else if (i == alreadyTried.Count)
-                    {
-                        print("1..No similar value was found");
-                        return desiredBlock;
-                    }
-                }
-                toasted.Add(desiredBlock);
-                if (toasted.Count == alreadyTried.Count)
-                {
-                    print("1...Tried all possibilities, canceling to try a new possition on the grid");
-                    noBlock = true;
-                }
+                if (BlockFit(shapes[desiredBlock], desiredPosition))
+                    return true;
                 else
                 {
-                    print("1...Trying a new number");
-                    desiredBlock = Random.Range(0, 4);
+                    indexTried.Add(desiredBlock);
+                    if (PlaceShape(desiredPosition, indexTried))
+                        return true;
+                    else
+                        return false;
                 }
             }
-            while (!noBlock);
         }
-        return -1;*/
+        else
+            return false;
+
     }
 }
