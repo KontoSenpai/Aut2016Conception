@@ -84,6 +84,10 @@ public class PlayerController : MonoBehaviour {
 		if (col.collider.gameObject.tag == "Ground" && !hasCollided)
 		{
 			hasCollided = true;
+			float y = rb.velocity.y;
+			Vector3 tmp = rb.velocity;
+			tmp.y = 0.0f;
+			rb.velocity = tmp;
 			rb.AddForce(Vector2.up * jumpForce);
 		}
 	}
