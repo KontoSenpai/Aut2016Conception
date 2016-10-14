@@ -28,15 +28,22 @@ public class PickupInvincible : MonoBehaviour {
         {
             // source.PlayOneShot(pickupSound, volumeRange);
 
+
+
+            //wait active time and set to the preview speed and destroy the pickup
+            StartCoroutine(wait());
+
+            //put the pickup to invisible 
+            GetComponent<BoxCollider2D>().enabled = false;
+            GetComponent<Renderer>().enabled = false;
         }
 
     }
 
-    private IEnumerator wait(Collider2D player, float maxSpeed)
+    private IEnumerator wait()
     {
 
-        yield return new WaitForSeconds(activeTime);
-    
+        yield return new WaitForSeconds(activeTime); 
         Destroy(gameObject);
     }
 
