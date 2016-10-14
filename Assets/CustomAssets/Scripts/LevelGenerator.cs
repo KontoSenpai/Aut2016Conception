@@ -11,7 +11,6 @@ public class LevelGenerator : MonoBehaviour
     public GameObject shape3;
     public GameObject shape4;
     public GameObject shape5;
-    public GameObject shape6;
 
     private List<GameObject> shapes;
     // Number of shapes we want
@@ -125,26 +124,26 @@ public class LevelGenerator : MonoBehaviour
         {
             if (alreadyTried.Count == 0)
             {
-                print("1..No block was previously tested");
+                print("1.. POSITIVE - No block was previously tested");
                 return desiredBlock;
             }
             else
             {
                 if (toasted.Count == alreadyTried.Count)
                 {
-                    print("1..Tried all possibilities, can't add at this position");
+                    print("1.. NEGATIVE - Tried all possibilities, can't add at this position");
                     rejected = true;
                 }
                 else
                 {
                     if (alreadyTried.IndexOf(desiredBlock) == -1)
                     {
-                        print("1..No correspondance in already tested blocks");
+                        print("1.. POSITIVE - No correspondance in already tested blocks");
                         return desiredBlock;
                     }
                     else
                     {
-                        print("1..The block already has been tried, rerolling for a new value");
+                        print("1.. RETRY - The block already has been tried, rerolling for a new value");
                         toasted.Add(desiredBlock);
                         desiredBlock = Random.Range(0, 4);
                     }

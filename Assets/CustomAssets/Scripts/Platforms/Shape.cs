@@ -7,7 +7,7 @@ public class Shape : MonoBehaviour
     public int shapeType;
     private int[][] collisions;
     private List<List<int>> gridX;
-   
+    private List<int> bords;
     // Use this for initialization
     void Start ()
     {
@@ -20,43 +20,61 @@ public class Shape : MonoBehaviour
 
     private List<List<int>> Type1()
     {
+        List<int> bords = new List<int>();
+        bords.Add(2);
+        bords.Add(2);
         gridX = new List<List<int>>();
         List<int> gridY = new List<int>();
         gridY.Add(1);
         for( int i = 0; i < 3; i++)
             gridY.Add(2);
+        gridX.Add(bords);
         gridX.Add(gridY);
-
+        gridX.Add(bords);
         return gridX;
     }
 
     private List<List<int>> Type2()
     {
+        List<int> bords = new List<int>();
+        bords.Add(2);
+        bords.Add(2);
         gridX = new List<List<int>>();
         List<int> gridY = new List<int>();
         gridY.Add(1);
+        gridX.Add(bords);
         for (int i = 0; i < 3; i++)
             gridY.Add(2);
         for (int i = 0; i < 2; i++)
             gridX.Add(gridY);
+        gridX.Add(bords);
         return gridX;
     }
 
     private List<List<int>> Type3()
     {
+        List<int> bords = new List<int>();
+        bords.Add(2);
+        bords.Add(2);
         gridX = new List<List<int>>();
+        gridX.Add(bords);
         List<int> gridY = new List<int>();
         gridY.Add(1);
         for (int i = 0; i < 3; i++)
             gridY.Add(2);
         for (int i = 0; i < 3; i++)
             gridX.Add(gridY);
+        gridX.Add(bords);
         return gridX;
     }
 
     private List<List<int>> Type4()
     {
+        List<int> bords = new List<int>();
+        bords.Add(2);
+        bords.Add(2);
         gridX = new List<List<int>>();
+        gridX.Add(bords);
         List<int> gridY1 = new List<int>();
         gridY1.Add(1);
         for( int i = 0; i < 3; i++)
@@ -80,11 +98,15 @@ public class Shape : MonoBehaviour
         gridX.Add(gridY1);
         gridX.Add(gridY2);
         gridX.Add(gridY3);
+        gridX.Add(bords);
         return gridX;
     }
 
     private List<List<int>> Type5()
     {
+        List<int> bords = new List<int>();
+        bords.Add(2);
+        bords.Add(2);
         gridX = new List<List<int>>();
         List<int> gridY1 = new List<int>();
         gridY1.Add(0);
@@ -112,9 +134,11 @@ public class Shape : MonoBehaviour
             else
                 gridY3.Add(3);
         }
+        gridX.Add(bords);
         gridX.Add(gridY1);
         gridX.Add(gridY2);
         gridX.Add(gridY3);
+        gridX.Add(bords);
         return gridX;
     }
 
