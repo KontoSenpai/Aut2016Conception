@@ -4,6 +4,7 @@ using System.Collections;
 public class LevelGeneratorV3 : MonoBehaviour {
 
     public GameObject block;
+    public GameObject blockFull;
     private int rows = 17;
 
     private int[][] gridIndexes;
@@ -42,16 +43,67 @@ public class LevelGeneratorV3 : MonoBehaviour {
             if (tries < 19)
             {
                 futurePosition = new Vector3(xPos, index, 0);
-                GameObject placedBlock = Instantiate(block, futurePosition, transform.rotation) as GameObject;
-                gridIndexes[xPos][index] = 1;
-                gridIndexes[xPos][index + 1] = 1;
-                gridIndexes[xPos][index + 2] = 1;
-                gridIndexes[xPos][index + 3] = 1;
+                ShapePlacement(futurePosition, xPos, index);
+
             }
             else
                 i = 42;
 
         }
+    }
+
+    private void ShapePlacement(Vector3 futurePosition, int xPos, int yPos)
+    {
+        float choices = Random.Range(0.0f, 2.0f);
+
+        if( choices <= 0.4 && gridIndexes[xPos+1][yPos] == 0 && yPos < 19)
+        {
+            Instantiate(block, futurePosition, transform.rotation);
+            Vector3 otherFuturePosition = new Vector3(xPos+1,yPos,0);
+            Instantiate(block, otherFuturePosition, transform.rotation);
+            gridIndexes[xPos][yPos] = 1;
+            gridIndexes[xPos][yPos + 1] = 2;
+            gridIndexes[xPos][yPos + 2] = 2;
+            gridIndexes[xPos][yPos + 3] = 2;
+            gridIndexes[xPos + 1][yPos] = 1;
+            gridIndexes[xPos + 1][yPos + 1] = 2;
+            gridIndexes[xPos + 1][yPos + 2] = 2;
+            gridIndexes[xPos + 1][yPos + 3] = 2;
+        }
+        else if( choices > 0.4 && choices <= 0.8)
+        {
+            Instantiate(blockFull, futurePosition, transform.rotation);
+            Vector3 otherFuturePosition = new Vector3(xPos, yPos + 1, 0);
+            Instantiate(block, otherFuturePosition, transform.rotation);
+            gridIndexes[xPos][yPos] = 2;
+            gridIndexes[xPos][yPos + 1] = 1;
+            gridIndexes[xPos][yPos + 2] = 2;
+            gridIndexes[xPos][yPos + 3] = 2;
+            gridIndexes[xPos][yPos + 4] = 2;
+        }
+        else if( choices > 0.8 && choices <= 1.2 && xPos >= 1)
+        {
+            Instantiate(block, futurePosition, transform.rotation);
+            Vector3 otherFuturePosition = new Vector3(xPos - 1, yPos, 0);
+            Instantiate(block, otherFuturePosition, transform.rotation);
+            gridIndexes[xPos][yPos] = 1;
+            gridIndexes[xPos][yPos + 1] = 2;
+            gridIndexes[xPos][yPos + 2] = 2;
+            gridIndexes[xPos][yPos + 3] = 2;
+            gridIndexes[xPos - 1][yPos] = 1;
+            gridIndexes[xPos - 1][yPos + 1] = 2;
+            gridIndexes[xPos - 1][yPos + 2] = 2;
+            gridIndexes[xPos - 1][yPos + 3] = 2;
+        }
+        else
+        {
+            Instantiate(block, futurePosition, transform.rotation);
+            gridIndexes[xPos][yPos] = 1;
+            gridIndexes[xPos][yPos + 1] = 1;
+            gridIndexes[xPos][yPos + 2] = 1;
+            gridIndexes[xPos][yPos + 3] = 1;
+        }
+
     }
 
 
