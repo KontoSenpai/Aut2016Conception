@@ -78,8 +78,8 @@ public class LevelGeneratorV3 : MonoBehaviour {
             gridIndexes[xPos][yPos] = 2;
             gridIndexes[xPos][yPos + 1] = 1;
             gridIndexes[xPos][yPos + 2] = 2;
-            gridIndexes[xPos][yPos + 3] = 2;
-            gridIndexes[xPos][yPos + 4] = 2;
+            gridIndexes[xPos][yPos + 3] = 3;
+            gridIndexes[xPos][yPos + 4] = 3;
         }
         else if( choices > 0.8 && choices <= 1.2 && xPos >= 1)
         {
@@ -88,20 +88,20 @@ public class LevelGeneratorV3 : MonoBehaviour {
             Instantiate(block, otherFuturePosition, transform.rotation);
             gridIndexes[xPos][yPos] = 1;
             gridIndexes[xPos][yPos + 1] = 2;
-            gridIndexes[xPos][yPos + 2] = 2;
-            gridIndexes[xPos][yPos + 3] = 2;
+            gridIndexes[xPos][yPos + 2] = 3;
+            gridIndexes[xPos][yPos + 3] = 3;
             gridIndexes[xPos - 1][yPos] = 1;
             gridIndexes[xPos - 1][yPos + 1] = 2;
-            gridIndexes[xPos - 1][yPos + 2] = 2;
-            gridIndexes[xPos - 1][yPos + 3] = 2;
+            gridIndexes[xPos - 1][yPos + 2] = 3;
+            gridIndexes[xPos - 1][yPos + 3] = 3;
         }
         else
         {
             Instantiate(block, futurePosition, transform.rotation);
             gridIndexes[xPos][yPos] = 1;
-            gridIndexes[xPos][yPos + 1] = 1;
-            gridIndexes[xPos][yPos + 2] = 1;
-            gridIndexes[xPos][yPos + 3] = 1;
+            gridIndexes[xPos][yPos + 1] = 2;
+            gridIndexes[xPos][yPos + 2] = 3;
+            gridIndexes[xPos][yPos + 3] = 3;
         }
 
     }
