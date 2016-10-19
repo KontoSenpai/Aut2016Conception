@@ -1,29 +1,43 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class LevelGeneratorV3 : MonoBehaviour {
 
     public GameObject block;
     public GameObject blockFull;
+    public Sprite[] blockVariations;
+    public Sprite[] blockFullVariations;
+
+    public GameObject playerSpawn;
+    public int nbPlayer;
+
     private int rows = 17;
 
     private int[][] gridIndexes;
+    private GameObject[][] gridBlocks;
     private int[] numberOfBlocks;
 
     // Use this for initialization
     void Start ()
     {
         gridIndexes = new int[20][];
+        gridBlocks = new GameObject[20][];
         for (int i = 0; i < 20; i++)
+        {
             gridIndexes[i] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-
+            gridBlocks[i] = new GameObject[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null};
+        }
         GenerateRandoms();
         for( int i = 0; i < 17; i++)
             PlaceBlocks( i);
+        SwapSprites();
+        PlayerStarts();
     }
 	
 	// Update is called once per frame
-	void Update () {
+	void Update ()
+    {
 	
 	}
 
@@ -56,48 +70,77 @@ public class LevelGeneratorV3 : MonoBehaviour {
     {
         float choices = Random.Range(0.0f, 2.0f);
 
+        // Un bloc à droite
         if( choices <= 0.4 && gridIndexes[xPos+1][yPos] == 0 && yPos < 19)
         {
-            Instantiate(block, futurePosition, transform.rotation);
-            Vector3 otherFuturePosition = new Vector3(xPos+1,yPos,0);
-            Instantiate(block, otherFuturePosition, transform.rotation);
+            gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
             gridIndexes[xPos][yPos] = 1;
             gridIndexes[xPos][yPos + 1] = 2;
-            gridIndexes[xPos][yPos + 2] = 2;
-            gridIndexes[xPos][yPos + 3] = 2;
+            gridIndexes[xPos][yPos + 2] = 3;
+            gridIndexes[xPos][yPos + 3] = 3;
+
+            Vector3 otherFuturePosition = new Vector3(xPos+1,yPos,0);
+            gridBlocks[xPos + 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
             gridIndexes[xPos + 1][yPos] = 1;
             gridIndexes[xPos + 1][yPos + 1] = 2;
-            gridIndexes[xPos + 1][yPos + 2] = 2;
-            gridIndexes[xPos + 1][yPos + 3] = 2;
+            gridIndexes[xPos + 1][yPos + 2] = 3;
+            gridIndexes[xPos + 1][yPos + 3] = 3;
         }
+        // Un bloc dessus
         else if( choices > 0.4 && choices <= 0.8)
         {
-            Instantiate(blockFull, futurePosition, transform.rotation);
+            gridBlocks[xPos][yPos] = Instantiate(blockFull, futurePosition, transform.rotation) as GameObject;
             Vector3 otherFuturePosition = new Vector3(xPos, yPos + 1, 0);
-            Instantiate(block, otherFuturePosition, transform.rotation);
+            gridBlocks[xPos][yPos + 1] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
             gridIndexes[xPos][yPos] = 2;
             gridIndexes[xPos][yPos + 1] = 1;
             gridIndexes[xPos][yPos + 2] = 2;
             gridIndexes[xPos][yPos + 3] = 3;
             gridIndexes[xPos][yPos + 4] = 3;
         }
+        // Un bloc à gauche
         else if( choices > 0.8 && choices <= 1.2 && xPos >= 1)
         {
-            Instantiate(block, futurePosition, transform.rotation);
-            Vector3 otherFuturePosition = new Vector3(xPos - 1, yPos, 0);
-            Instantiate(block, otherFuturePosition, transform.rotation);
+            gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
             gridIndexes[xPos][yPos] = 1;
             gridIndexes[xPos][yPos + 1] = 2;
             gridIndexes[xPos][yPos + 2] = 3;
             gridIndexes[xPos][yPos + 3] = 3;
+
+            Vector3 otherFuturePosition = new Vector3(xPos - 1, yPos, 0);
+            gridBlocks[xPos - 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
             gridIndexes[xPos - 1][yPos] = 1;
             gridIndexes[xPos - 1][yPos + 1] = 2;
             gridIndexes[xPos - 1][yPos + 2] = 3;
             gridIndexes[xPos - 1][yPos + 3] = 3;
         }
+        // Un bloc à gauche et à droite
+        else if( (choices > 1.2 && choices <= 1.5) && ( xPos >= 1 && xPos < 19))
+        {
+            gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
+            gridIndexes[xPos][yPos] = 1;
+            gridIndexes[xPos][yPos + 1] = 2;
+            gridIndexes[xPos][yPos + 2] = 3;
+            gridIndexes[xPos][yPos + 3] = 3;
+
+            Vector3 otherFuturePosition = new Vector3(xPos + 1, yPos, 0);
+            gridBlocks[xPos + 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+            gridIndexes[xPos + 1][yPos] = 1;
+            gridIndexes[xPos + 1][yPos + 1] = 2;
+            gridIndexes[xPos + 1][yPos + 2] = 3;
+            gridIndexes[xPos + 1][yPos + 3] = 3;
+
+            otherFuturePosition = new Vector3(xPos - 1, yPos, 0);
+            gridBlocks[xPos - 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+            gridIndexes[xPos - 1][yPos] = 1;
+            gridIndexes[xPos - 1][yPos + 1] = 2;
+            gridIndexes[xPos - 1][yPos + 2] = 3;
+            gridIndexes[xPos - 1][yPos + 3] = 3;
+        }
+        // Rien de spécial
         else
         {
-            Instantiate(block, futurePosition, transform.rotation);
+            gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
             gridIndexes[xPos][yPos] = 1;
             gridIndexes[xPos][yPos + 1] = 2;
             gridIndexes[xPos][yPos + 2] = 3;
@@ -106,7 +149,81 @@ public class LevelGeneratorV3 : MonoBehaviour {
 
     }
 
+    private void PlayerStarts()
+    {
+        List<string> potentials = new List<string>();
+        for (int x = 0; x < gridIndexes.Length; x++)
+        {
+            for (int y = 0; y < gridIndexes[x].Length; y++)
+            {
+                if (gridIndexes[x][y] == 2)
+                    potentials.Add(x + "-" + y);
+            }
+        }
 
+        for (int player = 0; player < nbPlayer; player++)
+        {
+            int randomOfPotentials = Random.Range(0, potentials.Count);
+            string kappaString = potentials[randomOfPotentials];
+            string[] splittedString = kappaString.Split(new char[] { '-' });
+            GameObject spawn = Instantiate(playerSpawn, new Vector3(IntParseFast(splittedString[0])+.5f, IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
+            spawn.GetComponent<SpawnPlayer>().Spawn(player+1);
+        }
+    }
+
+    private void SwapSprites()
+    {
+        for (int x = 0; x < gridBlocks.Length; x++)
+        {
+            for (int y = 0; y < gridBlocks[x].Length; y++)
+            {
+                if (gridBlocks[x][y] != null && gridBlocks[x][y].name.Contains("Half"))
+                {
+                    if( x == 0)
+                    {
+                        if (gridBlocks[x + 1][y] == null)
+                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[1];
+                    }
+                    else if( x == 19)
+                    {
+                        if (gridBlocks[x - 1][y] == null)
+                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[0];
+                    }
+                    else
+                    {
+                        if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] != null)
+                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[0];
+                        else if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] == null)
+                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[1];
+                        else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] == null)
+                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[2];
+                    }
+                }
+                else if( gridBlocks[x][y] != null && gridBlocks[x][y].name.Contains("Full"))
+                {
+                    if (x == 0)
+                    {
+                        if (gridBlocks[x + 1][y] == null)
+                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[1];
+                    }
+                    else if (x == 19)
+                    {
+                        if (gridBlocks[x - 1][y] == null)
+                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[0];
+                    }
+                    else
+                    {
+                        if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] != null)
+                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[0];
+                        else if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] == null)
+                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[1];
+                        else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] == null)
+                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[2];
+                    }
+                }
+            }
+        }
+    }
     /** UTILS
     *
     */
@@ -135,26 +252,46 @@ public class LevelGeneratorV3 : MonoBehaviour {
 
     private bool TestCollisions(int xPos, int yPos)
     {
-        if (gridIndexes[xPos][yPos] == 0)
+        if (gridIndexes[xPos][yPos] == 0) // Sur la position
         {
-            if (xPos == 0)
+            if (gridIndexes[xPos][yPos + 1] == 0)
+                return true;
+            else
+                return false;
+            /*
+            if (xPos == 0) // Premiere colone
             {
-                if (gridIndexes[xPos + 1][yPos + 1] == 0)
+                if (gridIndexes[xPos + 1][yPos + 1] == 0) // Haut-Droite
                     return true;
                 else
                     return false;
             }
-            else if (xPos == 19)
-                if (gridIndexes[xPos - 1][yPos + 1] == 0)
+            else if (xPos == 19) // Dernière colone
+            {
+                if (gridIndexes[xPos - 1][yPos + 1] == 0)// Haut-Gauche
                     return true;
                 else
                     return false;
+            }
             else if (gridIndexes[xPos + 1][yPos + 1] == 0 && gridIndexes[xPos - 1][yPos + 1] == 0)
                 return true;
             else
                 return false;
+                */
         }
         else
             return false;
+        //return true;
+    }
+
+    private static int IntParseFast(string value)
+    {
+        int result = 0;
+        for (int i = 0; i < value.Length; i++)
+        {
+            char letter = value[i];
+            result = 10 * result + (letter - 48);
+        }
+        return result;
     }
 }
