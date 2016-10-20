@@ -6,8 +6,9 @@ public class PlayerController : MonoBehaviour {
 	public float maxSpeed = 10f;
 	bool facingRight = true;
 	Rigidbody2D rb;
+    public int playerID;
 
-	Animator anim;
+    Animator anim;
 
 	bool grounded = false;
 	public Transform groundCheck;
@@ -45,10 +46,12 @@ public class PlayerController : MonoBehaviour {
 
 		anim.SetFloat ("vSpeed", rb.velocity.y);
 
-		float move = Input.GetAxis ("Horizontal");
+		float move = Input.GetAxis ("Horizontal_P" + playerID);
+        
 
 		anim.SetFloat ("hSpeed", Mathf.Abs(move));
-		/*
+
+        /*
 		if (grounded && !hasJumped) {
 			rb.AddForce (Vector2.up * jumpForce);
 			hasJumped = true;
@@ -57,7 +60,7 @@ public class PlayerController : MonoBehaviour {
 			hasJumped = false;
 		}
 		*/
-		rb.velocity = new Vector2 (move * maxSpeed, rb.velocity.y);
+        rb.velocity = new Vector2 (move * maxSpeed, rb.velocity.y);
 
 
 
