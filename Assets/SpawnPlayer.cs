@@ -24,5 +24,6 @@ public class SpawnPlayer : MonoBehaviour
         transform.name = "SpawnPlayer " + index;
         GameObject boule = Instantiate(playerObject, transform.position, transform.rotation) as GameObject;
         boule.transform.parent = transform;
+        boule.GetComponent<PlayerController>().playerID = index;
     }
 }
