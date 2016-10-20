@@ -14,6 +14,9 @@ public class LevelGeneratorV3 : MonoBehaviour {
 
     private int rows = 17;
 
+    private int nombreHalf = 0;
+    private int nombreFull = 0;
+
     private int[][] gridIndexes;
     private GameObject[][] gridBlocks;
     private int[] numberOfBlocks;
@@ -34,12 +37,6 @@ public class LevelGeneratorV3 : MonoBehaviour {
         SwapSprites();
         PlayerStarts();
     }
-	
-	// Update is called once per frame
-	void Update ()
-    {
-	
-	}
 
     private void PlaceBlocks( int index)
     {
@@ -47,7 +44,6 @@ public class LevelGeneratorV3 : MonoBehaviour {
         for ( int i = 0; i <= numberOfBlocks[index]; i++)
         {
             int tries = 0;
-            Vector3 futurePosition = new Vector3(0,0,0);
             do
             {
                 xPos = Random.Range(0, 19);
@@ -56,9 +52,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
 
             if (tries < 19)
             {
-                futurePosition = new Vector3(xPos, index, 0);
-                ShapePlacement(futurePosition, xPos, index);
-
+                ShapePlacement(xPos, index);
             }
             else
                 i = 42;
@@ -66,85 +60,33 @@ public class LevelGeneratorV3 : MonoBehaviour {
         }
     }
 
-    private void ShapePlacement(Vector3 futurePosition, int xPos, int yPos)
+    private void ShapePlacement( int xPos, int yPos)
     {
         float choices = Random.Range(0.0f, 2.0f);
-
         // Un bloc à droite
-        if( choices <= 0.4 && gridIndexes[xPos+1][yPos] == 0 && yPos < 19)
+        if( choices <= 0.4 && yPos < 19 && gridIndexes[xPos + 1][yPos] == 0 )
         {
-            gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
-            gridIndexes[xPos][yPos] = 1;
-            gridIndexes[xPos][yPos + 1] = 2;
-            gridIndexes[xPos][yPos + 2] = 3;
-            gridIndexes[xPos][yPos + 3] = 3;
-
-            Vector3 otherFuturePosition = new Vector3(xPos+1,yPos,0);
-            gridBlocks[xPos + 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
-            gridIndexes[xPos + 1][yPos] = 1;
-            gridIndexes[xPos + 1][yPos + 1] = 2;
-            gridIndexes[xPos + 1][yPos + 2] = 3;
-            gridIndexes[xPos + 1][yPos + 3] = 3;
+            BlockR(xPos, yPos);
         }
         // Un bloc dessus
         else if( choices > 0.4 && choices <= 0.8)
         {
-            gridBlocks[xPos][yPos] = Instantiate(blockFull, futurePosition, transform.rotation) as GameObject;
-            Vector3 otherFuturePosition = new Vector3(xPos, yPos + 1, 0);
-            gridBlocks[xPos][yPos + 1] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
-            gridIndexes[xPos][yPos] = 2;
-            gridIndexes[xPos][yPos + 1] = 1;
-            gridIndexes[xPos][yPos + 2] = 2;
-            gridIndexes[xPos][yPos + 3] = 3;
-            gridIndexes[xPos][yPos + 4] = 3;
+            BlockU(xPos, yPos);
         }
         // Un bloc à gauche
-        else if( choices > 0.8 && choices <= 1.2 && xPos >= 1)
+        else if( ( choices > 0.8 && choices <= 1.2) && xPos >= 1 && gridIndexes[xPos - 1][yPos] == 0 )
         {
-            gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
-            gridIndexes[xPos][yPos] = 1;
-            gridIndexes[xPos][yPos + 1] = 2;
-            gridIndexes[xPos][yPos + 2] = 3;
-            gridIndexes[xPos][yPos + 3] = 3;
-
-            Vector3 otherFuturePosition = new Vector3(xPos - 1, yPos, 0);
-            gridBlocks[xPos - 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
-            gridIndexes[xPos - 1][yPos] = 1;
-            gridIndexes[xPos - 1][yPos + 1] = 2;
-            gridIndexes[xPos - 1][yPos + 2] = 3;
-            gridIndexes[xPos - 1][yPos + 3] = 3;
+            BlockL(xPos, yPos);
         }
         // Un bloc à gauche et à droite
-        else if( (choices > 1.2 && choices <= 1.5) && ( xPos >= 1 && xPos < 19))
+        else if( (choices > 1.2 && choices <= 1.5)  && ( xPos >= 1 && xPos < 19) && (gridIndexes[xPos - 1][yPos] == 0 && gridIndexes[xPos + 1][yPos] == 0))
         {
-            gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
-            gridIndexes[xPos][yPos] = 1;
-            gridIndexes[xPos][yPos + 1] = 2;
-            gridIndexes[xPos][yPos + 2] = 3;
-            gridIndexes[xPos][yPos + 3] = 3;
-
-            Vector3 otherFuturePosition = new Vector3(xPos + 1, yPos, 0);
-            gridBlocks[xPos + 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
-            gridIndexes[xPos + 1][yPos] = 1;
-            gridIndexes[xPos + 1][yPos + 1] = 2;
-            gridIndexes[xPos + 1][yPos + 2] = 3;
-            gridIndexes[xPos + 1][yPos + 3] = 3;
-
-            otherFuturePosition = new Vector3(xPos - 1, yPos, 0);
-            gridBlocks[xPos - 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
-            gridIndexes[xPos - 1][yPos] = 1;
-            gridIndexes[xPos - 1][yPos + 1] = 2;
-            gridIndexes[xPos - 1][yPos + 2] = 3;
-            gridIndexes[xPos - 1][yPos + 3] = 3;
+            BlockLR(xPos, yPos);
         }
         // Rien de spécial
         else
         {
-            gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
-            gridIndexes[xPos][yPos] = 1;
-            gridIndexes[xPos][yPos + 1] = 2;
-            gridIndexes[xPos][yPos + 2] = 3;
-            gridIndexes[xPos][yPos + 3] = 3;
+
         }
 
     }
@@ -178,55 +120,105 @@ public class LevelGeneratorV3 : MonoBehaviour {
             for (int y = 0; y < gridBlocks[x].Length; y++)
             {
                 if (gridBlocks[x][y] != null && gridBlocks[x][y].name.Contains("Half"))
-                {
-                    if( x == 0)
-                    {
-                        if (gridBlocks[x + 1][y] == null)
-                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[1];
-                    }
-                    else if( x == 19)
-                    {
-                        if (gridBlocks[x - 1][y] == null)
-                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[0];
-                    }
-                    else
-                    {
-                        if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] != null)
-                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[0];
-                        else if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] == null)
-                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[1];
-                        else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] == null)
-                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[2];
-                    }
-                }
-                else if( gridBlocks[x][y] != null && gridBlocks[x][y].name.Contains("Full"))
-                {
-                    if (x == 0)
-                    {
-                        if (gridBlocks[x + 1][y] == null)
-                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[1];
-                    }
-                    else if (x == 19)
-                    {
-                        if (gridBlocks[x - 1][y] == null)
-                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[0];
-                    }
-                    else
-                    {
-                        if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] != null)
-                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[0];
-                        else if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] == null)
-                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[1];
-                        else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] == null)
-                            gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[2];
-                    }
-                }
+                    HandleHalfBlocks(x, y);
+                else if (gridBlocks[x][y] != null && gridBlocks[x][y].name.Contains("Full"))
+                    HandleFullBlocks(x, y);
             }
         }
     }
     /** UTILS
     *
     */
+
+    private void BlockR(int xPos, int yPos)
+    {
+        Vector3 futurePosition = new Vector3(xPos, yPos, 0);
+        gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
+        NameBlocks(gridBlocks[xPos][yPos]);
+        gridIndexes[xPos][yPos] = 1;
+        gridIndexes[xPos][yPos + 1] = 2;
+        gridIndexes[xPos][yPos + 2] = 3;
+        gridIndexes[xPos][yPos + 3] = 3;
+
+        Vector3 otherFuturePosition = new Vector3(xPos + 1, yPos, 0);
+        gridBlocks[xPos + 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+        NameBlocks(gridBlocks[xPos + 1][yPos]);
+        gridIndexes[xPos + 1][yPos] = 1;
+        gridIndexes[xPos + 1][yPos + 1] = 2;
+        gridIndexes[xPos + 1][yPos + 2] = 3;
+        gridIndexes[xPos + 1][yPos + 3] = 3;
+    }
+
+    private void BlockL(int xPos, int yPos)
+    {
+        Vector3 futurePosition = new Vector3(xPos, yPos, 0);
+        gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
+        NameBlocks(gridBlocks[xPos][yPos]);
+        gridIndexes[xPos][yPos] = 1;
+        gridIndexes[xPos][yPos + 1] = 2;
+        gridIndexes[xPos][yPos + 2] = 3;
+        gridIndexes[xPos][yPos + 3] = 3;
+
+        Vector3 otherFuturePosition = new Vector3(xPos - 1, yPos, 0);
+        gridBlocks[xPos - 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+        NameBlocks(gridBlocks[xPos - 1][yPos]);
+        gridIndexes[xPos - 1][yPos] = 1;
+        gridIndexes[xPos - 1][yPos + 1] = 2;
+        gridIndexes[xPos - 1][yPos + 2] = 3;
+        gridIndexes[xPos - 1][yPos + 3] = 3;
+    }
+    
+    private void BlockLR(int xPos, int yPos)
+    {
+        Vector3 futurePosition = new Vector3(xPos, yPos, 0);
+        gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
+        NameBlocks(gridBlocks[xPos][yPos]);
+        gridIndexes[xPos][yPos] = 1;
+        gridIndexes[xPos][yPos + 1] = 2;
+        gridIndexes[xPos][yPos + 2] = 3;
+        gridIndexes[xPos][yPos + 3] = 3;
+
+        Vector3 otherFuturePosition = new Vector3(xPos + 1, yPos, 0);
+        gridBlocks[xPos + 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+        NameBlocks(gridBlocks[xPos + 1][yPos]);
+        gridIndexes[xPos + 1][yPos] = 1;
+        gridIndexes[xPos + 1][yPos + 1] = 2;
+        gridIndexes[xPos + 1][yPos + 2] = 3;
+        gridIndexes[xPos + 1][yPos + 3] = 3;
+
+        otherFuturePosition = new Vector3(xPos - 1, yPos, 0);
+        gridBlocks[xPos - 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+        NameBlocks(gridBlocks[xPos - 1][yPos]);
+        gridIndexes[xPos - 1][yPos] = 1;
+        gridIndexes[xPos - 1][yPos + 1] = 2;
+        gridIndexes[xPos - 1][yPos + 2] = 3;
+        gridIndexes[xPos - 1][yPos + 3] = 3;
+    }
+
+    private void BlockU(int xPos, int yPos)
+    {
+        Vector3 futurePosition = new Vector3(xPos, yPos, 0);
+        gridBlocks[xPos][yPos] = Instantiate(blockFull, futurePosition, transform.rotation) as GameObject;
+        Vector3 otherFuturePosition = new Vector3(xPos, yPos + 1, 0);
+        gridBlocks[xPos][yPos + 1] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+        NameBlocks(gridBlocks[xPos][yPos + 1], gridBlocks[xPos][yPos]);
+        gridIndexes[xPos][yPos] = 2;
+        gridIndexes[xPos][yPos + 1] = 1;
+        gridIndexes[xPos][yPos + 2] = 2;
+        gridIndexes[xPos][yPos + 3] = 3;
+        gridIndexes[xPos][yPos + 4] = 3;
+    }
+
+    private void Block(int xPos, int yPos)
+    {
+        Vector3 futurePosition = new Vector3(xPos, yPos, 0);
+        gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
+        NameBlocks(gridBlocks[xPos][yPos]);
+        gridIndexes[xPos][yPos] = 1;
+        gridIndexes[xPos][yPos + 1] = 2;
+        gridIndexes[xPos][yPos + 2] = 3;
+        gridIndexes[xPos][yPos + 3] = 3;
+    }
 
     private void GenerateRandoms()
     {
@@ -282,6 +274,125 @@ public class LevelGeneratorV3 : MonoBehaviour {
         else
             return false;
         //return true;
+    }
+
+    private void HandleHalfBlocks(int x, int y)
+    {
+        if (x == 0)
+        {
+            if (y > 0)
+            {
+                if (gridBlocks[x + 1][y] == null && gridBlocks[x][y - 1] == null)
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[1];
+                if (gridBlocks[x + 1][y] == null && gridBlocks[x][y - 1] != null)
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[4];
+            }
+        }
+        else if (x == 19)
+        {
+            if (y > 0)
+            {
+                if (gridBlocks[x - 1][y] == null && gridBlocks[x][y - 1] == null)
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[0];
+                if (gridBlocks[x - 1][y] == null && gridBlocks[x][y - 1] != null)
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[3];
+            }
+        }
+        else
+        {
+            if (y > 0 && gridBlocks[x][y - 1] == null)
+            {
+                if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] != null)
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[0];
+                else if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] == null)
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[1];
+                else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] == null)
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[2];
+            }
+            else if ( y == 0 || ( y > 0 && gridBlocks[x][y - 1] != null ))
+            {
+                if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] != null)
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[3];
+                else if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] == null)
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[4];
+                else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] == null)
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockVariations[5];
+            }
+
+        }
+    }
+
+    private void HandleFullBlocks( int x, int y)
+    {
+        //Premiere colonne
+        if (x == 0)
+        {
+            if (gridBlocks[x + 1][y] == null)
+                gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[3];
+            else
+            {
+                if(gridBlocks[x + 1][y].name.Contains("Half"))
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[4];
+            }
+        }
+        //Dernière colonne
+        else if (x == 19)
+        {
+            if (gridBlocks[x - 1][y] == null)
+                gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[0];
+            else
+            {
+                if (gridBlocks[x - 1][y].name.Contains("Half"))
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[1];
+            }
+        }
+        else
+        {
+            // Rien à droite, quelque chose à gauche
+            if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] == null)
+            {
+                if( gridBlocks[x - 1][y].name.Contains("Half"))
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[2];
+                else
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[3];
+            } 
+            // Rien à gauche, quelque chose à droite  
+            else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] != null)
+            {
+                if( gridBlocks[x + 1][y].name.Contains("Half"))
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[5];
+                else
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[0];
+
+            }
+            // Quelque chose à gauche et à droite
+            else if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] != null)
+            {
+                if(gridBlocks[x - 1][y].name.Contains("Half") && gridBlocks[x + 1][y].name.Contains("Half"))
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[7];
+                else if(gridBlocks[x - 1][y].name.Contains("Full") && gridBlocks[x + 1][y].name.Contains("Half"))
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[3];
+                else if (gridBlocks[x - 1][y].name.Contains("Half") && gridBlocks[x + 1][y].name.Contains("Full"))
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[0];
+            }
+            //Rien à gauche et à droite
+            else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] == null)
+                gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blockFullVariations[6];
+        }
+    }
+
+    private void NameBlocks( GameObject halfBlock)
+    {
+        halfBlock.name = "Half " + nombreHalf;
+        nombreHalf++;
+    }
+
+    private void NameBlocks( GameObject halfBlock, GameObject fullBlock)
+    {
+        halfBlock.name = "Half " + nombreHalf;
+        nombreHalf++;
+        fullBlock.name = "Full " + nombreFull;
+        nombreFull++;
     }
 
     private static int IntParseFast(string value)
