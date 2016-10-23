@@ -12,8 +12,8 @@ public class LoadOnClick : MonoBehaviour {
 		SceneManager.LoadScene(level);
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
+	// Quit the game
+	public void QuitGame () {
+		Application.Quit ();
 	}
 }
