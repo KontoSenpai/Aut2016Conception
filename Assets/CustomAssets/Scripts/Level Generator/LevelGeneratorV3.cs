@@ -48,7 +48,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
             {
                 xPos = Random.Range(0, 19);
                 tries++;
-            } while ( !TestCollisions( xPos, index) && tries < 19);
+            }while ( !TestCollisions( xPos, index) && tries < 19);
 
             if (tries < 19)
             {
@@ -65,30 +65,19 @@ public class LevelGeneratorV3 : MonoBehaviour {
         float choices = Random.Range(0.0f, 2.0f);
         // Un bloc à droite
         if( choices <= 0.4 && yPos < 19 && gridIndexes[xPos + 1][yPos] == 0 )
-        {
             BlockR(xPos, yPos);
-        }
         // Un bloc dessus
         else if( choices > 0.4 && choices <= 0.8)
-        {
             BlockU(xPos, yPos);
-        }
         // Un bloc à gauche
         else if( ( choices > 0.8 && choices <= 1.2) && xPos >= 1 && gridIndexes[xPos - 1][yPos] == 0 )
-        {
             BlockL(xPos, yPos);
-        }
         // Un bloc à gauche et à droite
         else if( (choices > 1.2 && choices <= 1.5)  && ( xPos >= 1 && xPos < 19) && (gridIndexes[xPos - 1][yPos] == 0 && gridIndexes[xPos + 1][yPos] == 0))
-        {
             BlockLR(xPos, yPos);
-        }
         // Rien de spécial
         else
-        {
-
-        }
-
+            Block(xPos, yPos);
     }
 
     private void PlayerStarts()

@@ -12,18 +12,13 @@ public class SpawnPlayer : MonoBehaviour
     {
 	    
 	}
-	
-	// Update is called once per frame
-	void Update ()
-    {
-	
-	}
 
     public void Spawn(int index)
     {
         transform.name = "SpawnPlayer " + index;
         GameObject boule = Instantiate(playerObject, transform.position, transform.rotation) as GameObject;
         boule.transform.parent = transform;
-        boule.GetComponent<PlayerController>().playerID = index;
+        boule.name = "Player " + index;
+        boule.GetComponent<PlayerController>().SetID(index);
     }
 }
