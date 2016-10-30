@@ -27,6 +27,10 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
+	public void Resume() {
+		Pause ();
+	}
+
 	public void Quit() {
 		Application.Quit ();
 	}
