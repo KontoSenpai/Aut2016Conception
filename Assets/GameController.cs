@@ -15,18 +15,11 @@ public class GameController : MonoBehaviour {
 	}
 
 	public void Pause () {
-		/*if (canvas.gameObject.activeInHierarchy == false) 
-		{
-			canvas.gameObject.SetActive (true);
-			Time.timeScale = 0;
-		} 
-		else
-		{
-			canvas.gameObject.SetActive (false);
-			Time.timeScale = 1;
-		}*/
+
+		//Get all child in the canvas
 		foreach (Transform child in canvas) {
 
+			//Check if the child is part of the pause menu and if it is displayed or not
 			if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == false) {
 				child.gameObject.SetActive (true);
 				Time.timeScale = 0;
