@@ -15,7 +15,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	public void Pause () {
-		if (canvas.gameObject.activeInHierarchy == false) 
+		/*if (canvas.gameObject.activeInHierarchy == false) 
 		{
 			canvas.gameObject.SetActive (true);
 			Time.timeScale = 0;
@@ -24,6 +24,19 @@ public class GameController : MonoBehaviour {
 		{
 			canvas.gameObject.SetActive (false);
 			Time.timeScale = 1;
+		}*/
+		foreach (Transform child in canvas) {
+
+			if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == false) {
+				child.gameObject.SetActive (true);
+				Time.timeScale = 0;
+			}
+			else if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == true) {
+				child.gameObject.SetActive (false);
+				Time.timeScale = 1;
+			}
+
+
 		}
 	}
 
