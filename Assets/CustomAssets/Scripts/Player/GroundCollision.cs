@@ -34,7 +34,7 @@ public class GroundCollision : MonoBehaviour {
 
     void OnCollisionEnter2D(Collision2D col)
     {
-        if (col.collider.gameObject.tag == "Ground" && !hasCollided && rb.velocity.y == 0)
+		if (col.collider.gameObject.tag == "Ground" && !hasCollided && rb.velocity.y == 0)
         {
             currentTime = Time.time;
             hasCollided = true;

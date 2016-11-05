@@ -4,11 +4,12 @@ using System.Collections;
 public class PlayerController : MonoBehaviour {
 
 	public float maxSpeed = 10f;
-	bool facingRight = true;
-	Rigidbody2D rb;
-    private int playerID;
 
-    Animator anim;
+	private bool facingRight = true;
+	private Rigidbody2D rb;
+    private int playerID;
+    
+	private Animator anim;
 
 	bool grounded = false;
 	public Transform groundCheck;
@@ -27,6 +28,7 @@ public class PlayerController : MonoBehaviour {
 		rb = GetComponent<Rigidbody2D> ();
 		anim = GetComponent<Animator> ();
 
+		playerID = gameObject.GetComponent<PlayerStatus> ().GetID ();
 	}
 	// Update is called once per frame
 	void FixedUpdate () 
@@ -95,9 +97,4 @@ public class PlayerController : MonoBehaviour {
 	}
 
 
-
-    public void SetID(int id)
-    {
-        playerID = id;
-    }
 }
