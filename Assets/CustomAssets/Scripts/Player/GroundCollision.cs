@@ -3,10 +3,10 @@ using System.Collections;
 
 public class GroundCollision : MonoBehaviour {
 
-    private bool hasCollided;
     private float currentTime;
+    private ArrayList timeCollisions = new ArrayList();
     private float jumpForce = 600f;
-    float delay = 0.25f;
+    float delay = 0.15f;
 
     Rigidbody2D rb;
     Animator anim;
@@ -21,24 +21,45 @@ public class GroundCollision : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        if (Time.time - currentTime >= delay && hasCollided == true)
+        if(JumpOccurs())
         {
+            timeCollisions.Clear();
             Vector3 tmp = rb.velocity;
             tmp.y = 0.0f;
             rb.velocity = tmp;
             rb.AddForce(Vector2.up * jumpForce);
-            hasCollided = false;
             anim.SetBool("Ground", false);
+        }
+        else
+        {
+            anim.SetBool("Ground", true);
         }
     }
 
+    private bool JumpOccurs()
+    {
+        for( int i = 0; i < timeCollisions.Count; i++)
+        {
+            if( Time.time - (float)timeCollisions[i] >=delay)
+                return true;
+        }
+        return false;
+    }
+
+    /* COLLISIONS
+    *
+    */
     void OnCollisionEnter2D(Collision2D col)
     {
-		if (col.collider.gameObject.tag == "Ground" && !hasCollided && rb.velocity.y == 0)
+		if (col.gameObject.tag == "Ground")
+            timeCollisions.Add(Time.time);
+        else if(col.gameObject.tag == "Slider")
         {
-            currentTime = Time.time;
-            hasCollided = true;
-            anim.SetBool("Ground", true);
+            print("kappa");
         }
+    }
+
+    void OnCollisionExit2D(Collision2D col)
+    {
     }
 }
