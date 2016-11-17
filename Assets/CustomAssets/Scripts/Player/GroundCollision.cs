@@ -30,10 +30,6 @@ public class GroundCollision : MonoBehaviour {
             rb.AddForce(Vector2.up * jumpForce);
             anim.SetBool("Ground", false);
         }
-        else
-        {
-            anim.SetBool("Ground", true);
-        }
     }
 
     private bool JumpOccurs()
@@ -52,7 +48,11 @@ public class GroundCollision : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D col)
     {
 		if (col.gameObject.tag == "Ground")
+        {
+            if (timeCollisions.Count == 0)
+                anim.SetBool("Ground", true);
             timeCollisions.Add(Time.time);
+        }
         else if(col.gameObject.tag == "Slider")
         {
             print("kappa");

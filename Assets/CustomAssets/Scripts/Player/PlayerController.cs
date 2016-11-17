@@ -29,7 +29,7 @@ public class PlayerController : MonoBehaviour {
             print("Keepo");
         }
 
-        if (currentSpeed < maxSpeed)
+        if (currentSpeed <= maxSpeed)
             AdjustSpeed(move);
 
         rb.velocity = new Vector2 (move * currentSpeed, rb.velocity.y);
@@ -45,13 +45,9 @@ public class PlayerController : MonoBehaviour {
         if (move == 0)
             currentSpeed = 0;
         else if( (move > 0 && facingRight) || (move < 0 && !facingRight))
-        {
-            currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, maxSpeed / 10);
-        }
+            currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, 0.3f);
         else if( (move > 0 && !facingRight) || (move < 0 && facingRight))
-        {
-            currentSpeed = Mathf.Lerp( 0, maxSpeed, maxSpeed / 10);
-        }
+            currentSpeed = Mathf.Lerp( currentSpeed, maxSpeed, 0.3f);
     }
 
 	//Flip the character
@@ -61,7 +57,6 @@ public class PlayerController : MonoBehaviour {
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
-
 	}
 
     public float GetMaxSpeed() { return maxSpeed;}
