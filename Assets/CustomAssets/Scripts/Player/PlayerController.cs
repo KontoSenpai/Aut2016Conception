@@ -24,7 +24,7 @@ public class PlayerController : MonoBehaviour {
         try
         {
             move = Input.GetAxis("Horizontal_P" + playerID);
-            move = Input.GetAxis("Horizontal");
+            move = Input.GetAxis("Horizontal_C" + playerID);
         }
         catch
         {

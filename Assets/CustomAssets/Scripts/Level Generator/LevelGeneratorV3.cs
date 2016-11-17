@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 public class LevelGeneratorV3 : MonoBehaviour {
 
+    public bool generateBlocks;
     public GameObject block;
     public GameObject blockFull;
     public Sprite[] blockVariations;
@@ -22,19 +23,22 @@ public class LevelGeneratorV3 : MonoBehaviour {
     private int[] numberOfBlocks;
 
     // Use this for initialization
-    void Start ()
+    void Start()
     {
-        gridIndexes = new int[20][];
-        gridBlocks = new GameObject[20][];
-        for (int i = 0; i < 20; i++)
+        if( generateBlocks)
         {
-            gridIndexes[i] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-            gridBlocks[i] = new GameObject[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null};
-        }
-        GenerateRandoms();
-        for( int i = 0; i < 17; i++)
-            PlaceBlocks( i);
-        SwapSprites();
+            gridIndexes = new int[20][];
+            gridBlocks = new GameObject[20][];
+            for (int i = 0; i < 20; i++)
+            {
+                gridIndexes[i] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                gridBlocks[i] = new GameObject[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null };
+            }
+            GenerateRandoms();
+            for (int i = 0; i < 17; i++)
+                PlaceBlocks(i);
+            SwapSprites();
+     }
         PlayerStarts();
     }
 
@@ -82,24 +86,36 @@ public class LevelGeneratorV3 : MonoBehaviour {
 
     private void PlayerStarts()
     {
-        List<string> potentials = new List<string>();
-        for (int x = 0; x < gridIndexes.Length; x++)
+        if( generateBlocks)
         {
-            for (int y = 0; y < gridIndexes[x].Length; y++)
+            List<string> potentials = new List<string>();
+            for (int x = 0; x < gridIndexes.Length; x++)
             {
-                if (gridIndexes[x][y] == 2)
-                    potentials.Add(x + "-" + y);
+                for (int y = 0; y < gridIndexes[x].Length; y++)
+                {
+                    if (gridIndexes[x][y] == 2)
+                        potentials.Add(x + "-" + y);
+                }
+            }
+
+            for (int player = 0; player < nbPlayer; player++)
+            {
+                int randomOfPotentials = Random.Range(0, potentials.Count);
+                string kappaString = potentials[randomOfPotentials];
+                string[] splittedString = kappaString.Split(new char[] { '-' });
+                GameObject spawn = Instantiate(playerSpawn, new Vector3(IntParseFast(splittedString[0]) + .5f, IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
+                spawn.GetComponent<SpawnPlayer>().Spawn(player + 1);
+            }
+        }
+        else
+        {
+            for (int player = 0; player < nbPlayer; player++)
+            {
+                GameObject spawn = Instantiate(playerSpawn, new Vector3(player * 10 + 0.5f, player*10 + 0.5f, 0), transform.rotation) as GameObject;
+                spawn.GetComponent<SpawnPlayer>().Spawn(player + 1);
             }
         }
 
-        for (int player = 0; player < nbPlayer; player++)
-        {
-            int randomOfPotentials = Random.Range(0, potentials.Count);
-            string kappaString = potentials[randomOfPotentials];
-            string[] splittedString = kappaString.Split(new char[] { '-' });
-            GameObject spawn = Instantiate(playerSpawn, new Vector3(IntParseFast(splittedString[0])+.5f, IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
-            spawn.GetComponent<SpawnPlayer>().Spawn(player+1);
-        }
     }
 
     private void SwapSprites()

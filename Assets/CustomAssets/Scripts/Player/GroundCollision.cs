@@ -20,7 +20,7 @@ public class GroundCollision : MonoBehaviour {
 	// Update is called once per frame
 	void Update ()
     {
-        if(JumpOccurs())
+        if(JumpOccurs() && gameObject.GetComponentInParent<PlayerStatus>().GetID() == 1)
         {
             timeCollisions.Clear();
             GetComponentInParent<PlayerController>().Jump(jumpForce);
