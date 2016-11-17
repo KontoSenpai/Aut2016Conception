@@ -6,6 +6,7 @@ public class GroundCollision : MonoBehaviour {
     private float currentTime;
     private ArrayList timeCollisions = new ArrayList();
     private float jumpForce = 600f;
+    private float slideForce = 300;
     float delay = 0.15f;
 
     Rigidbody2D rb;
@@ -55,7 +56,7 @@ public class GroundCollision : MonoBehaviour {
         }
         else if(col.gameObject.tag == "Slider")
         {
-            print("kappa");
+            rb.AddForce(Vector2.up * slideForce);
         }
     }
 
