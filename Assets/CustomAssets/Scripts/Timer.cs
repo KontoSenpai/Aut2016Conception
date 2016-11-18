@@ -29,7 +29,7 @@ public class Timer : MonoBehaviour {
 
 
         timerText.text = string.Format("{0:00} : {1:00}", minute, seconds);
-        Debug.Log(string.Format("{0:00} : {1:00}", minute, seconds));
+        //Debug.Log(string.Format("{0:00} : {1:00}", minute, seconds));
 
        
 	
