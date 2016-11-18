@@ -23,19 +23,17 @@ public class PlayerStatus : MonoBehaviour {
     }
     public void Hurt()
     {
-        if( currentLife > 1)
-        {
-            currentLife--;
-            vulnerable = false;
-            invulnerabilityStart = Time.time;
-            print(currentLife);
-        }
-        else
-        {
-            print("DEAD");
-            //ROUND OVER
-        }
-
+		if (gameObject != null) {
+			if (currentLife > 0) {
+				currentLife--;
+				vulnerable = false;
+				invulnerabilityStart = Time.time;
+			} 
+			else {
+				Destroy (gameObject);
+				//ROUND OVER		
+			}
+		}
     }
 
     public bool IsVulnerable(){return vulnerable;}

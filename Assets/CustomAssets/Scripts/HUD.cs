@@ -67,15 +67,22 @@ public class HUD : MonoBehaviour {
 
 		//Update the players UI
 		for (int i = 0; i < players.Length; i++) {
-			playerCurrentLife[i] = players [i].GetComponent<PlayerStatus>().GetCurrentLife();
 
-			if ((playerCurrentLife [i] <= playerMaxLife [i]) && (playerCurrentLife[i] != playerPreviousLife[i])) {
+			//If the player exists
+			if (players [i] != null) {
+				playerCurrentLife [i] = players [i].GetComponent<PlayerStatus> ().GetCurrentLife ();
+
+				if ((playerCurrentLife [i] <= playerMaxLife [i]) && (playerCurrentLife [i] != playerPreviousLife [i])) {
+					DestroyHeartUI (i);
+					CreateHeartUI (i);
+					playerPreviousLife [i] = playerCurrentLife [i];
+				}
+			}
+			else {
 				DestroyHeartUI (i);
-				CreateHeartUI (i);
-				playerPreviousLife [i] = playerCurrentLife [i];
 			}
 		}
-}
+	}
 
 	private void CreateHeartUI(int player) {
 
