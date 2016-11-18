@@ -16,13 +16,14 @@ public class PlayerHit : MonoBehaviour {
     /* COLLISIONS
     *
     */
-    void OnCollisionEnter2D(Collision2D col)
+    void OnTriggerEnter2D(Collider2D col)
     {
-        if (col.gameObject.tag == "Player" && col.gameObject.transform.position.y < gameObject.transform.position.y)
+        print(col.gameObject.transform.parent.tag);
+        if (col.gameObject.transform.parent.tag == "Player" && col.gameObject.transform.position.y > gameObject.transform.position.y)
         {
-            print("OWNER" + gameObject.transform.position.y);
-            print("HIT " + col.gameObject.transform.position.y);
-            GetComponentInParent<PlayerController>().Jump(300f);
+            if( col.gameObject.GetComponentInParent<PlayerStatus>().IsVulnerable())
+                col.gameObject.GetComponentInParent<PlayerStatus>().Hurt();
+            col.gameObject.GetComponentInParent<PlayerController>().Jump(400f);
         }
     }
 }
