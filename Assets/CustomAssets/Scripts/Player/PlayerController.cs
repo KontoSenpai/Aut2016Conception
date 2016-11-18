@@ -18,18 +18,22 @@ public class PlayerController : MonoBehaviour {
 		playerID = gameObject.GetComponent<PlayerStatus> ().GetID ();
 	}
 
-	void FixedUpdate () 
-	{
+    void Update()
+    {
         float move = 0.0f;
-        try
+        if (Input.GetJoystickNames().Length > 0)
         {
             move = Input.GetAxis("Horizontal_P" + playerID);
+        }
+        else
+        { 
             move = Input.GetAxis("Horizontal_C" + playerID);
         }
-        catch
-        {
-            print("Keepo");
-        }
+
+
+        // HERE MAKE CODE FOR ALLOURDISSEMENT
+        if (Input.GetButtonUp("Allourdissement_P"+ playerID))
+        { print("Bite" +playerID); }
 
         if (currentSpeed <= maxSpeed)
             AdjustSpeed(move);
