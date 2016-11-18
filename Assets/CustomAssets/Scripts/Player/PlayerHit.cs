@@ -18,7 +18,6 @@ public class PlayerHit : MonoBehaviour {
     */
     void OnTriggerEnter2D(Collider2D col)
     {
-        print(col.gameObject.transform.parent.tag);
         if (col.gameObject.transform.parent.tag == "Player" && col.gameObject.transform.position.y > gameObject.transform.position.y)
         {
             if( col.gameObject.GetComponentInParent<PlayerStatus>().IsVulnerable())
