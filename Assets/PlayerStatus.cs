@@ -20,6 +20,11 @@ public class PlayerStatus : MonoBehaviour {
     {
         if (Time.time -invulnerabilityStart >= invulnerabilityTime && !vulnerable)
             vulnerable = true;
+        if( currentLife == 0)
+        {
+            Destroy(gameObject);
+            //Fin du jeu
+        }
     }
     public void Hurt()
     {
@@ -29,10 +34,6 @@ public class PlayerStatus : MonoBehaviour {
 				vulnerable = false;
 				invulnerabilityStart = Time.time;
 			} 
-			else {
-				Destroy (gameObject);
-				//ROUND OVER		
-			}
 		}
     }
 

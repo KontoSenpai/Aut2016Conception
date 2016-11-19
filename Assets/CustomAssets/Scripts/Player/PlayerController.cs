@@ -14,7 +14,7 @@ public class PlayerController : MonoBehaviour {
     void Start () 
 	{
 		rb = GetComponent<Rigidbody2D> ();
-        animator = GetComponent<Animator>();
+        animator = GetComponentInChildren<Animator>();
 		playerID = gameObject.GetComponent<PlayerStatus> ().GetID ();
 	}
 

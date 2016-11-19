@@ -4,29 +4,25 @@ using System.Collections;
 public class GroundCollision : MonoBehaviour {
 
     private float currentTime;
+    private ArrayList slide = new ArrayList();
     private ArrayList timeCollisions = new ArrayList();
     private float jumpForce = 600f;
     private float slideForce = 300;
     float delay = 0.15f;
 
-    Rigidbody2D rb;
-
-    // Use this for initialization
-    void Start ()
+    // Update is called once per frame
+    void Update()
     {
-        rb = GetComponentInParent<Rigidbody2D>();
-    }
-	
-	// Update is called once per frame
-	void Update ()
-    { 
         // TO REMOVE IF YOU WANT BOTH PLAYERS TO MOVE
-        if(JumpOccurs() && gameObject.GetComponentInParent<PlayerStatus>().GetID() == 1)
+        if (JumpOccurs() && gameObject.GetComponentInParent<PlayerStatus>().GetID() == 1)
         {
             timeCollisions.Clear();
             GetComponentInParent<PlayerController>().Jump(jumpForce);
             GetComponentInParent<PlayerController>().SetAnimation("Ground", false);
         }
+
+        if (slide.Count > 0)
+            GetComponentInParent<PlayerController>().Jump(slideForce);
     }
 
     private bool JumpOccurs()
@@ -44,17 +40,24 @@ public class GroundCollision : MonoBehaviour {
     */
     void OnCollisionEnter2D(Collision2D col)
     {
-		if (col.gameObject.tag == "Ground")
+        if (col.gameObject.tag == "Ground" && gameObject.transform.position.y > col.gameObject.transform.position.y)
         {
             if (timeCollisions.Count == 0)
                 GetComponentInParent<PlayerController>().SetAnimation("Ground", true);
             timeCollisions.Add(Time.time);
         }
-        else if(col.gameObject.tag == "Slider")
-            GetComponentInParent<PlayerController>().Jump(slideForce);
+        if (col.gameObject.tag == "Sliders" && gameObject.transform.position.y <= col.gameObject.transform.position.y)
+            slide.Add(col.gameObject);
+    }
+
+    void OnCollisionStay2d(Collision2D col)
+    {
+
     }
 
     void OnCollisionExit2D(Collision2D col)
     {
+        if(col.gameObject.tag == "Sliders")
+            slide.Remove(col.gameObject);
     }
 }
