@@ -16,10 +16,10 @@ public class SpawnPlayer : MonoBehaviour
     public void Spawn(int index)
     {
         transform.name = "SpawnPlayer " + index;
-        GameObject boule = Instantiate(playerObject, transform.position, transform.rotation) as GameObject;
-        boule.transform.parent = transform;
-        boule.name = "Player " + index;
-		boule.tag = "Player";
-		boule.GetComponent<PlayerStatus>().SetID(index);
+        GameObject player = Instantiate(playerObject, transform.position, transform.rotation) as GameObject;
+        player.transform.parent = transform;
+        player.name = "Player " + index;
+		player.tag = "Player";
+		player.GetComponent<PlayerStatus>().SetID(index);
     }
 }
