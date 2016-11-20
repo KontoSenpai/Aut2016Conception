@@ -1,13 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Pickup : MonoBehaviour
+public class PickupSpeed : MonoBehaviour
 {
    // public AudioClip pickupSound;
    // private AudioSource source;
 
-    private float newMaxSpeed = 10.0f;
-    private float activeTime =2;
+    public float newMaxSpeed = 10.0f;
+    public float activeTime =2;
     private float maxSpeed;
 
     void Start()
@@ -23,16 +23,18 @@ public class Pickup : MonoBehaviour
 
     public void changeSpeed(Collider2D player)
     {
+        //put the pickup to invisible 
+        GetComponent<BoxCollider2D>().enabled = false;
+        GetComponent<Renderer>().enabled = false;
+
         //Save the preview speed and set the new
         maxSpeed = player.gameObject.GetComponentInParent<PlayerController>().GetMaxSpeed();
-        player.gameObject.GetComponentInParent<PlayerController>().SetMaxSpeed( newMaxSpeed);
+        player.gameObject.GetComponentInParent<PlayerController>().SetMaxSpeed(newMaxSpeed);
 
         //wait active time and set to the preview speed and destroy the pickup
         StartCoroutine(wait(player, maxSpeed));
 
-        //put the pickup to invisible 
-        GetComponent<BoxCollider2D>().enabled = false;
-        GetComponent<Renderer>().enabled = false;
+
     }
 
     private IEnumerator wait(Collider2D player, float maxSpeed)
@@ -40,6 +42,7 @@ public class Pickup : MonoBehaviour
         yield return new WaitForSeconds(activeTime);
 
         player.gameObject.GetComponentInParent<PlayerController>().SetMaxSpeed(maxSpeed);
+        print(player.gameObject.GetComponent<PlayerController>().GetMaxSpeed());
         Destroy(gameObject);
     }
 

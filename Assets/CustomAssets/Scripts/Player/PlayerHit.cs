@@ -20,8 +20,11 @@ public class PlayerHit : MonoBehaviour {
     {
         if (col.gameObject.transform.tag == "Head" && col.gameObject.transform.position.y < gameObject.transform.position.y)
         {
-            if( col.gameObject.GetComponentInParent<PlayerStatus>().IsVulnerable())
+
+            if (col.gameObject.GetComponentInParent<PlayerStatus>().IsVulnerable())
+            {
                 col.gameObject.GetComponentInParent<PlayerStatus>().Hurt();
+            }              
             gameObject.GetComponentInParent<PlayerController>().Jump(400f);
         }
     }
