@@ -7,7 +7,9 @@ public class LevelGeneratorV3 : MonoBehaviour {
 
     public bool generateBlocks; // Know if blocks must be created or not
     public GameObject playerSpawn; // Prefab handling player generation
+    public GameObject pickupSpawn; // Prefab handling pickup generation
     public int nbPlayer = 2; // Number of players
+    public int nbPickup = 2; // Number of PickUp
     public int nbTraps = 10; // Number of traps in scene
     public GameObject trapObject; // Trap Styles
     public GameObject[] backgrounds; // Background Style
@@ -64,6 +66,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
             SwapSprites();
         }
         SpawnTraps();
+        SpawnPickup();
         PlayerStarts();
     }
 
@@ -178,6 +181,32 @@ public class LevelGeneratorV3 : MonoBehaviour {
             }
         }
 
+    }
+
+    private void SpawnPickup()
+    {
+        GameObject pickups = new GameObject();
+        pickups.name = "pickup";
+        if (generateBlocks)
+        {
+            List<string> potentials = new List<string>();
+            for (int x = 0; x < gridIndexes.Length; x++)
+            {
+                for (int y = 0; y < gridIndexes[x].Length; y++)
+                {
+                    if (gridIndexes[x][y] == 2)
+                        potentials.Add(x + "-" + y);
+                }
+            }
+            for (int Pickup=0; Pickup < nbPickup; Pickup++)
+            {
+                int randomOfPotentials = Random.Range(0, potentials.Count);
+                string kappaString = potentials[randomOfPotentials];
+                string[] splittedString = kappaString.Split(new char[] { '-' });
+                GameObject spawner = Instantiate(pickupSpawn, new Vector3(IntParseFast(splittedString[0]) + .5f, IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
+                spawner.transform.parent = pickups.transform;    
+            }
+        }
     }
 
     private void SpawnTraps()
