@@ -33,9 +33,11 @@ public class PlayerController : MonoBehaviour {
 
         // HERE MAKE CODE FOR ALLOURDISSEMENT
         if (Input.GetButtonUp("Allourdissement_P"+ playerID))
-        { print("Bite" +playerID); }
+        {
+            print("Bite" +playerID);
+        }
 
-        if (currentSpeed <= maxSpeed)
+        if (currentSpeed <= maxSpeed || currentSpeed > maxSpeed)
             AdjustSpeed(move);
 
         rb.velocity = new Vector2 (move * currentSpeed, rb.velocity.y);
@@ -50,10 +52,11 @@ public class PlayerController : MonoBehaviour {
     {
         if (move == 0)
             currentSpeed = 0;
-        else if( (move > 0 && facingRight) || (move < 0 && !facingRight))
+
+        else if ((move > 0 && facingRight) || (move < 0 && !facingRight))
             currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, 0.3f);
-        else if( (move > 0 && !facingRight) || (move < 0 && facingRight))
-            currentSpeed = Mathf.Lerp( currentSpeed, maxSpeed, 0.3f);
+        else if ((move > 0 && !facingRight) || (move < 0 && facingRight))
+            currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, 0.3f);
     }
 
 	//Flip the character

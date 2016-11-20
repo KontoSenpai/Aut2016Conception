@@ -16,22 +16,16 @@ public class PickupInvincible : MonoBehaviour {
         //source = gameObject.GetComponent<AudioSource>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
     void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.tag == "Player")
         {
             // source.PlayOneShot(pickupSound, volumeRange);
 
-
+            SetInvincible(other);
 
             //wait active time and set to the preview speed and destroy the pickup
-            StartCoroutine(wait());
+            StartCoroutine(wait(other));
 
             //put the pickup to invisible 
             GetComponent<BoxCollider2D>().enabled = false;
@@ -40,10 +34,19 @@ public class PickupInvincible : MonoBehaviour {
 
     }
 
-    private IEnumerator wait()
+    public void SetInvincible(Collider2D player)
     {
+        player.gameObject.GetComponent<PlayerStatus>().SetVulnerability(false);
+        player.gameObject.GetComponent<PlayerStatus>().invulnerablePickup = true; 
+    }
 
-        yield return new WaitForSeconds(activeTime); 
+    private IEnumerator wait(Collider2D player)
+    {
+        yield return new WaitForSeconds(activeTime);
+
+        player.GetComponent<PlayerStatus>().SetVulnerability(true);
+        player.gameObject.GetComponent<PlayerStatus>().invulnerablePickup = false;
+
         Destroy(gameObject);
     }
 

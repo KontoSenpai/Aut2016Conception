@@ -7,7 +7,8 @@ public class PlayerStatus : MonoBehaviour {
     public float invulnerabilityTime = 1.5f;
     private float invulnerabilityStart;
     private bool vulnerable = true;
-	public int currentLife;
+    public bool invulnerablePickup = false;
+    public int currentLife;
 	private int playerID;
 
 	// Use this for initialization
@@ -18,7 +19,7 @@ public class PlayerStatus : MonoBehaviour {
 
     void Update()
     {
-        if (Time.time -invulnerabilityStart >= invulnerabilityTime && !vulnerable)
+        if (Time.time - invulnerabilityStart >= invulnerabilityTime && !vulnerable && !invulnerablePickup)
             vulnerable = true;
         if( currentLife == 0)
         {
@@ -31,6 +32,7 @@ public class PlayerStatus : MonoBehaviour {
 		if (gameObject != null) {
 			if (currentLife > 0) {
 				currentLife--;
+
 				vulnerable = false;
 				invulnerabilityStart = Time.time;
 			} 
@@ -38,6 +40,7 @@ public class PlayerStatus : MonoBehaviour {
     }
 
     public bool IsVulnerable(){return vulnerable;}
+    public void SetVulnerability(bool isVulnerable) {vulnerable = isVulnerable; }
 	public int GetCurrentLife(){return currentLife;}
 	public int GetMaxLife(){return maxLife;}
 
