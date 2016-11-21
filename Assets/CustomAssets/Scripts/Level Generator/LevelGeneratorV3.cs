@@ -13,22 +13,12 @@ public class LevelGeneratorV3 : MonoBehaviour {
     public int nbPickup = 2; // Number of PickUp
     public int nbTraps = 10; // Number of traps in scene
     public GameObject[] trapObject; // Trap Styles
-    public GameObject[] backgrounds; // Background Style
 
     public GameObject blocks; // half-block prefabs
     public GameObject blocksF; // block prefabs
 
-    private GameObject block; // Half-blocks references
-    private GameObject blockFull; // Blocks references
-
     private GameObject[] boundsRows = new GameObject[40];
     private GameObject[] boundsBottom = new GameObject[20];
-
-    public Sprite[] blockForest; // Variantions for forest
-    public Sprite[] blockFullForest; // Variations for forest
-
-    private Sprite[] blocksV; // Half-block sprites references
-    private Sprite[] blocksFullV; // Block sprites references
 
     private int rows = 17; // toal rows in level
 
@@ -43,7 +33,8 @@ public class LevelGeneratorV3 : MonoBehaviour {
     private GameObject spawnsParent;
     private GameObject trapsParent;
     private GameObject pickupsParent;
-    private GameObject background;
+
+    SpriteChange kappa;
     void Start()
     {
         CreateContent();
@@ -63,43 +54,17 @@ public class LevelGeneratorV3 : MonoBehaviour {
         Destroy(spawnsParent);
         Destroy(trapsParent);
         Destroy(pickupsParent);
-        Destroy(background);
         CreateContent();
     }
 
+    /** Function called each round to generate a new layout
+    *
+    */
     private void CreateContent()
     {
-        if (round == 1)
-        {
-            CreateParents();
-            background = Instantiate(backgrounds[0], new Vector3(10, 9.5f, 0), transform.rotation) as GameObject;
-            background.transform.parent = transform;
-            block = blocks;
-            blockFull = blocksF;
-            blocksV = blockForest;
-            blocksFullV = blockFullForest;
-        }
-        else if( round == 2)
-        {
-            CreateParents();
-            background = Instantiate(backgrounds[0], new Vector3(10, 9.5f, 0), transform.rotation) as GameObject;
-            background.transform.parent = transform;
-            block = blocks;
-            blockFull = blocksF;
-            blocksV = blockForest;
-            blocksFullV = blockFullForest;
-        }
-        else if(round == 3)
-        {
-            CreateParents();
-            background = Instantiate(backgrounds[0], new Vector3(10, 9.5f, 0), transform.rotation) as GameObject;
-            background.transform.parent = transform;
-            block = blocks;
-            blockFull = blocksF;
-            blocksV = blockForest;
-            blocksFullV = blockFullForest;
-        }
-
+        kappa = GetComponent<SpriteChange>();
+        kappa.SetSelection(round);
+        CreateParents();
         CreateBounds();
         if (generateBlocks)
         {
@@ -113,7 +78,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
             GenerateRandoms();
             for (int i = 0; i < 17; i++)
                 PlaceBlocks(i);
-            SwapSprites();
+            GetComponent<SpriteChange>().ChangeSprites(gridBlocks, boundsRows, boundsBottom);
         }
         SpawnTraps();
         SpawnPickup();
@@ -126,40 +91,39 @@ public class LevelGeneratorV3 : MonoBehaviour {
     private void CreateBounds()
     {
         int indy = 0;
-        int indx = 0;
+        SpriteChange kappa = GetComponent<SpriteChange>();
         // LEFT COLUMN
         for (int y = 0; y < 20; y++)
         {
-            GameObject b = Instantiate(blockFull, new Vector3(-1, y, 0), transform.rotation) as GameObject;
+            GameObject b = Instantiate(blocksF, new Vector3(-1, y, 0), transform.rotation) as GameObject;
             b.transform.parent = blocksParent.transform;
-            b.GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[3];
+            b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFull(3);
             boundsRows[indy] = b;
             indy++;
         }
         // RIGHT COLUMN
         for( int y = 0; y < 20; y++)
         {
-            GameObject b = Instantiate(blockFull, new Vector3(20, y, 0), transform.rotation) as GameObject;
+            GameObject b = Instantiate(blocksF, new Vector3(20, y, 0), transform.rotation) as GameObject;
             b.transform.parent = blocksParent.transform;
-            b.GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[0];
+            b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFull(0);
             boundsRows[indy] = b;
             indy++;
         }
         //BOTTOM COLUMN
         for( int x = 0; x < 20; x++)
         {
-            GameObject b = Instantiate(blockFull, new Vector3(x, -1, 0), transform.rotation) as GameObject;
+            GameObject b = Instantiate(blocks, new Vector3(x, -0.5f, 0), transform.rotation) as GameObject;
             b.transform.parent = blocksParent.transform;
-            b.GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[0];
-            boundsBottom[indx] = b;
-            indx++;
+            b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSprite(6);
+            boundsBottom[x] = b;
         }
-        GameObject bl = Instantiate(blockFull, new Vector3(-1, -1, 0), transform.rotation) as GameObject;
+        GameObject bl = Instantiate(blocksF, new Vector3(-1, -1, 0), transform.rotation) as GameObject;
         bl.transform.parent = blocksParent.transform;
-        bl.GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[8];
-        bl = Instantiate(blockFull, new Vector3(20, -1, 0), transform.rotation) as GameObject;
+        bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFull(8);
+        bl = Instantiate(blocksF, new Vector3(20, -1, 0), transform.rotation) as GameObject;
         bl.transform.parent = blocksParent.transform;
-        bl.GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[8];
+        bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFull(8);
     }
 
     /**Function to generate a blocks on a line of the level grid
@@ -184,6 +148,10 @@ public class LevelGeneratorV3 : MonoBehaviour {
         }
     }
 
+    /** Function to Determine which kind of prefab should be placed
+    * @Param xPos : line on the grid
+    * @Param yPos : row on the grid
+    */
     private void ShapePlacement( int xPos, int yPos)
     {
         float choices = Random.Range(0.0f, 2.0f);
@@ -241,8 +209,6 @@ public class LevelGeneratorV3 : MonoBehaviour {
 
     private void SpawnPickup()
     {
-        GameObject pickups = new GameObject();
-        pickups.name = "pickup";
         if (generateBlocks)
         {
             List<string> potentials = new List<string>();
@@ -260,7 +226,8 @@ public class LevelGeneratorV3 : MonoBehaviour {
                 string kappaString = potentials[randomOfPotentials];
                 string[] splittedString = kappaString.Split(new char[] { '-' });
                 GameObject spawner = Instantiate(pickupSpawn, new Vector3(IntParseFast(splittedString[0]) + .5f, IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
-                spawner.transform.parent = pickups.transform;    
+                gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] = 3;
+                spawner.transform.parent = pickupsParent.transform;    
             }
         }
     }
@@ -288,27 +255,10 @@ public class LevelGeneratorV3 : MonoBehaviour {
                 string[] splittedString = kappaString.Split(new char[] { '-' });
                 GameObject t = Instantiate(trapObject[round-1], new Vector3(IntParseFast(splittedString[0]), IntParseFast(splittedString[1]) - 0.25f, 0), transform.rotation) as GameObject;
                 t.transform.parent = trapsParent.transform;
-                gridIndexes[IntParseFast(splittedString[0])] [IntParseFast(splittedString[0])] = 3;
+                gridIndexes[IntParseFast(splittedString[0])] [IntParseFast(splittedString[1])] = 3;
             }
         }
     }
-
-    private void SwapSprites()
-    {
-        for (int x = 0; x < gridBlocks.Length; x++)
-        {
-            for (int y = 0; y < gridBlocks[x].Length; y++)
-            {
-                if (gridBlocks[x][y] != null && gridBlocks[x][y].name.Contains("Half"))
-                    HandleHalfBlocks(x, y);
-                else if (gridBlocks[x][y] != null && gridBlocks[x][y].name.Contains("Full"))
-                    HandleFullBlocks(x, y);
-            }
-        }
-        HandleBorder();
-    }
-
-
 
     /** Function that generate a certain amount of platforms to spawn in each lines
     *
@@ -341,7 +291,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
     private void BlockR(int xPos, int yPos)
     {
         Vector3 futurePosition = new Vector3(xPos, yPos, 0);
-        gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
+        gridBlocks[xPos][yPos] = Instantiate(blocks, futurePosition, transform.rotation) as GameObject;
         gridBlocks[xPos][yPos].transform.parent = blocksParent.transform;
         
         gridIndexes[xPos][yPos] = 1;
@@ -349,11 +299,10 @@ public class LevelGeneratorV3 : MonoBehaviour {
         gridIndexes[xPos][yPos + 2] = 3;
         gridIndexes[xPos][yPos + 3] = 3;
 
-        gridBlocks[xPos][yPos].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[6];
         NameBlocks(gridBlocks[xPos][yPos]);
 
         Vector3 otherFuturePosition = new Vector3(xPos + 1, yPos, 0);
-        gridBlocks[xPos + 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+        gridBlocks[xPos + 1][yPos] = Instantiate(blocks, otherFuturePosition, transform.rotation) as GameObject;
         gridBlocks[xPos + 1][yPos].transform.parent = blocksParent.transform;
         
         gridIndexes[xPos + 1][yPos] = 1;
@@ -361,14 +310,13 @@ public class LevelGeneratorV3 : MonoBehaviour {
         gridIndexes[xPos + 1][yPos + 2] = 3;
         gridIndexes[xPos + 1][yPos + 3] = 3;
 
-        gridBlocks[xPos + 1][yPos].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[6];
         NameBlocks(gridBlocks[xPos + 1][yPos]);
     }
 
     private void BlockL(int xPos, int yPos)
     {
         Vector3 futurePosition = new Vector3(xPos, yPos, 0);
-        gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
+        gridBlocks[xPos][yPos] = Instantiate(blocks, futurePosition, transform.rotation) as GameObject;
         gridBlocks[xPos][yPos].transform.parent = blocksParent.transform;
         
         gridIndexes[xPos][yPos] = 1;
@@ -376,11 +324,10 @@ public class LevelGeneratorV3 : MonoBehaviour {
         gridIndexes[xPos][yPos + 2] = 3;
         gridIndexes[xPos][yPos + 3] = 3;
 
-        gridBlocks[xPos][yPos].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[6];
         NameBlocks(gridBlocks[xPos][yPos]);
 
         Vector3 otherFuturePosition = new Vector3(xPos - 1, yPos, 0);
-        gridBlocks[xPos - 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+        gridBlocks[xPos - 1][yPos] = Instantiate(blocks, otherFuturePosition, transform.rotation) as GameObject;
         gridBlocks[xPos - 1][yPos].transform.parent = blocksParent.transform;
 
         gridIndexes[xPos - 1][yPos] = 1;
@@ -388,14 +335,13 @@ public class LevelGeneratorV3 : MonoBehaviour {
         gridIndexes[xPos - 1][yPos + 2] = 3;
         gridIndexes[xPos - 1][yPos + 3] = 3;
 
-        gridBlocks[xPos - 1][yPos].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[6];
         NameBlocks(gridBlocks[xPos - 1][yPos]);
     }
     
     private void BlockLR(int xPos, int yPos)
     {
         Vector3 futurePosition = new Vector3(xPos, yPos, 0);
-        gridBlocks[xPos][yPos] = Instantiate(block, futurePosition, transform.rotation) as GameObject;
+        gridBlocks[xPos][yPos] = Instantiate(blocks, futurePosition, transform.rotation) as GameObject;
         gridBlocks[xPos][yPos].transform.parent = blocksParent.transform;
 
         gridIndexes[xPos][yPos] = 1;
@@ -403,11 +349,11 @@ public class LevelGeneratorV3 : MonoBehaviour {
         gridIndexes[xPos][yPos + 2] = 3;
         gridIndexes[xPos][yPos + 3] = 3;
 
-        gridBlocks[xPos][yPos].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[6];
+        gridBlocks[xPos][yPos].GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSprite(6);
         NameBlocks(gridBlocks[xPos][yPos]);
 
         Vector3 otherFuturePosition = new Vector3(xPos + 1, yPos, 0);
-        gridBlocks[xPos + 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+        gridBlocks[xPos + 1][yPos] = Instantiate(blocks, otherFuturePosition, transform.rotation) as GameObject;
         gridBlocks[xPos + 1][yPos].transform.parent = blocksParent.transform;
        
         gridIndexes[xPos + 1][yPos] = 1;
@@ -415,11 +361,10 @@ public class LevelGeneratorV3 : MonoBehaviour {
         gridIndexes[xPos + 1][yPos + 2] = 3;
         gridIndexes[xPos + 1][yPos + 3] = 3;
 
-        gridBlocks[xPos + 1][yPos].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[6];
         NameBlocks(gridBlocks[xPos + 1][yPos]);
 
         otherFuturePosition = new Vector3(xPos - 1, yPos, 0);
-        gridBlocks[xPos - 1][yPos] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+        gridBlocks[xPos - 1][yPos] = Instantiate(blocks, otherFuturePosition, transform.rotation) as GameObject;
         gridBlocks[xPos - 1][yPos].transform.parent = blocksParent.transform;
 
         gridIndexes[xPos - 1][yPos] = 1;
@@ -427,18 +372,17 @@ public class LevelGeneratorV3 : MonoBehaviour {
         gridIndexes[xPos - 1][yPos + 2] = 3;
         gridIndexes[xPos - 1][yPos + 3] = 3;
 
-        gridBlocks[xPos - 1][yPos].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[6];
         NameBlocks(gridBlocks[xPos - 1][yPos]);
     }
 
     private void BlockU(int xPos, int yPos)
     {
         Vector3 futurePosition = new Vector3(xPos, yPos, 0);
-        gridBlocks[xPos][yPos] = Instantiate(blockFull, futurePosition, transform.rotation) as GameObject;
+        gridBlocks[xPos][yPos] = Instantiate(blocksF, futurePosition, transform.rotation) as GameObject;
         gridBlocks[xPos][yPos].transform.parent = blocksParent.transform;
        
         Vector3 otherFuturePosition = new Vector3(xPos, yPos + 1, 0);
-        gridBlocks[xPos][yPos + 1] = Instantiate(block, otherFuturePosition, transform.rotation) as GameObject;
+        gridBlocks[xPos][yPos + 1] = Instantiate(blocks, otherFuturePosition, transform.rotation) as GameObject;
         gridBlocks[xPos][yPos + 1].transform.parent = blocksParent.transform;
         
         gridIndexes[xPos][yPos] = 1;
@@ -447,8 +391,6 @@ public class LevelGeneratorV3 : MonoBehaviour {
         gridIndexes[xPos][yPos + 3] = 3;
         gridIndexes[xPos][yPos + 4] = 3;
 
-        gridBlocks[xPos][yPos].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[8];
-        gridBlocks[xPos][yPos + 1].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[6];
         NameBlocks(gridBlocks[xPos][yPos + 1], gridBlocks[xPos][yPos]);
     }
 
@@ -490,147 +432,19 @@ public class LevelGeneratorV3 : MonoBehaviour {
         //return true;
     }
 
-    private void HandleHalfBlocks(int x, int y)
-    {
-        if (x == 0)
-        {
-            if (y > 0)
-            {
-                if (gridBlocks[x + 1][y] == null && gridBlocks[x][y - 1] == null)
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[1];
-                if (gridBlocks[x + 1][y] == null && gridBlocks[x][y - 1] != null)
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[4];
-            }
-        }
-        else if (x == 19)
-        {
-            if (y > 0)
-            {
-                if (gridBlocks[x - 1][y] == null && gridBlocks[x][y - 1] == null)
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[0];
-                if (gridBlocks[x - 1][y] == null && gridBlocks[x][y - 1] != null)
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[3];
-            }
-        }
-        else
-        {
-            if (y > 0 && gridBlocks[x][y - 1] == null)
-            {
-                if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] != null)
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[0];
-                else if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] == null)
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[1];
-                else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] == null)
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[2];
-            }
-            else if ( y == 0 || ( y > 0 && gridBlocks[x][y - 1] != null ))
-            {
-                if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] != null)
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[3];
-                else if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] == null)
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[4];
-                else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] == null)
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksV[5];
-            }
-
-        }
-    }
-
-    private void HandleFullBlocks( int x, int y)
-    {
-        //Premiere colonne
-        if (x == 0)
-        {
-            if (gridBlocks[x + 1][y] == null)
-                gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[3];
-            else
-            {
-                if(gridBlocks[x + 1][y].name.Contains("Half"))
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[4];
-            }
-        }
-        //Dernière colonne
-        else if (x == 19)
-        {
-            if (gridBlocks[x - 1][y] == null)
-                gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[0];
-            else
-            {
-                if (gridBlocks[x - 1][y].name.Contains("Half"))
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[1];
-            }
-        }
-        else
-        {
-            // Rien à droite, quelque chose à gauche
-            if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] == null)
-            {
-                if( gridBlocks[x - 1][y].name.Contains("Half"))
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[2];
-                else
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[3];
-            } 
-            // Rien à gauche, quelque chose à droite  
-            else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] != null)
-            {
-                if( gridBlocks[x + 1][y].name.Contains("Half"))
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[5];
-                else
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[0];
-
-            }
-            // Quelque chose à gauche et à droite
-            else if (gridBlocks[x - 1][y] != null && gridBlocks[x + 1][y] != null)
-            {
-                if(gridBlocks[x - 1][y].name.Contains("Half") && gridBlocks[x + 1][y].name.Contains("Half"))
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[7];
-                else if(gridBlocks[x - 1][y].name.Contains("Full") && gridBlocks[x + 1][y].name.Contains("Half"))
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[3];
-                else if (gridBlocks[x - 1][y].name.Contains("Half") && gridBlocks[x + 1][y].name.Contains("Full"))
-                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[0];
-            }
-            //Rien à gauche et à droite
-            else if (gridBlocks[x - 1][y] == null && gridBlocks[x + 1][y] == null)
-                gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[6];
-        }
-    }
-
-    private void HandleBorder()
-    {
-        int yInt = 0;
-        //ROWS
-        for( int y = 0; y < boundsRows.Length; y++)
-        {
-            if( y < 20)
-            {
-                if(gridIndexes[0][y] == 1 && gridBlocks[0][y].transform.name.Contains("Half"))
-                    boundsRows[y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[4];
-                else if( gridIndexes[0][y] == 1 && gridBlocks[0][y].transform.name.Contains("Full"))
-                    boundsRows[y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[8];
-            }
-            else
-            {
-                if (gridIndexes[19][yInt] == 1 && gridBlocks[19][yInt].transform.name.Contains("Half"))
-                    boundsRows[y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[1];
-                else if (gridIndexes[19][yInt] == 1 && gridBlocks[19][yInt].transform.name.Contains("Full"))
-                    boundsRows[y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[8];
-                yInt++;
-            }
-        }
-        //BOTTOM
-        for( int x = 0; x < boundsBottom.Length; x++)
-        {
-            if (gridIndexes[x][0] == 1)
-                boundsBottom[x].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[8];
-        }
-    }
-
+    /** Function that change the name of the block to make easier the sprite change
+    * @Param halfblock : Object needing to be renamed
+    */
     private void NameBlocks( GameObject halfBlock)
     {
         halfBlock.name = "Half " + nombreHalf;
         nombreHalf++;
     }
 
+    /** Function that change the name of the blocks to make easier the sprite change
+    * @Param halfblock : Object needing to be renamed
+    * @Param fullblock : Object needing to be renamed
+    */
     private void NameBlocks( GameObject halfBlock, GameObject fullBlock)
     {
         halfBlock.name = "Half " + nombreHalf;
@@ -655,6 +469,10 @@ public class LevelGeneratorV3 : MonoBehaviour {
         pickupsParent.transform.parent = transform;
     }
 
+    /** Fast and efficient way to parse
+    * @Param value : desired string to convert to an int
+    * @Return result : int parsed from value
+    */
     private static int IntParseFast(string value)
     {
         int result = 0;
