@@ -29,7 +29,8 @@ public class PlayerStatus : MonoBehaviour {
     }
     public void Hurt()
     {
-		if (gameObject != null) {
+		if (gameObject != null) {			
+			GetComponent<PlayerController> ().SetCanMove (true);
 			if (currentLife > 0) {
 				currentLife--;
 

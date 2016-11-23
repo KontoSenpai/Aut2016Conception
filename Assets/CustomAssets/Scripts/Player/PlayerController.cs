@@ -5,10 +5,14 @@ public class PlayerController : MonoBehaviour {
 
 	private float maxSpeed = 5f;
     private float currentSpeed = 0f;
+	private float slamForce = 800f;
 
     private bool facingRight = true;
+	private bool canMove = true;
+
 	private Rigidbody2D rb;
     private int playerID;
+
     Animator animator;
 
     void Start () 
@@ -21,7 +25,7 @@ public class PlayerController : MonoBehaviour {
     void Update()
     {
         float move = 0.0f;
-        if (Input.GetJoystickNames().Length > 0)
+        if (Input.GetJoystickNames().Length > 0 && canMove)
         {
             move = Input.GetAxis("Horizontal_P" + playerID);
         }
@@ -32,9 +36,11 @@ public class PlayerController : MonoBehaviour {
 
 
         // HERE MAKE CODE FOR ALLOURDISSEMENT
-        if (Input.GetButtonUp("Allourdissement_P"+ playerID))
+		if ((Input.GetButtonUp("Allourdissement_P"+ playerID) || (Input.GetKeyDown(KeyCode.H) && playerID == 1))
+			&& canMove)
         {
             print("Bite" +playerID);
+			Slam (slamForce);
         }
 
         if (currentSpeed <= maxSpeed || currentSpeed > maxSpeed)
@@ -42,10 +48,10 @@ public class PlayerController : MonoBehaviour {
 
         rb.velocity = new Vector2 (move * currentSpeed, rb.velocity.y);
 
-		if (move > 0 && !facingRight)
+		if ((move > 0 && !facingRight) || (move < 0 && facingRight))
 			Flip ();
-		else if (move < 0 && facingRight)
-			Flip();
+		//else if (move < 0 && facingRight)
+		//	Flip();
 	}
 
     private void AdjustSpeed( float move)
@@ -81,6 +87,21 @@ public class PlayerController : MonoBehaviour {
         rb.AddForce(Vector2.up * force);
     }
 
+	public void Slam( float force)
+	{
+		SetCanMove (false);
+		//rb.gravityScale = 6;
+		Vector3 tmp = rb.velocity;
+		tmp.x = 0.0f;
+		tmp.y = 0.0f;
+		tmp.z = 0.0f;
+		rb.velocity = tmp;
+		rb.AddForce(Vector2.up * -force);
+	}
+
     public float GetMaxSpeed() { return maxSpeed;}
     public void SetMaxSpeed(float max) { maxSpeed = max; }
+
+
+	public void SetCanMove(bool value) { canMove = value; }
 }

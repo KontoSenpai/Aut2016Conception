@@ -45,6 +45,7 @@ public class GroundCollision : MonoBehaviour {
             if (timeCollisions.Count == 0)
                 GetComponentInParent<PlayerController>().SetAnimation("Ground", true);
             timeCollisions.Add(Time.time);
+			GetComponentInParent<PlayerController> ().SetCanMove (true);
         }
         if (col.gameObject.tag == "Sliders" && gameObject.transform.position.y <= col.gameObject.transform.position.y)
             slide.Add(col.gameObject);
