@@ -25,21 +25,18 @@ public class PlayerController : MonoBehaviour {
     void Update()
     {
         float move = 0.0f;
-        if (Input.GetJoystickNames().Length > 0 && canMove)
-        {
-            move = Input.GetAxis("Horizontal_P" + playerID);
-        }
-        else
-        { 
-            move = Input.GetAxis("Horizontal_C" + playerID);
-        }
 
+		if (canMove) {
+			if (Input.GetJoystickNames ().Length > 0) {
+				move = Input.GetAxis ("Horizontal_P" + playerID);
+			} else { 
+				move = Input.GetAxis ("Horizontal_C" + playerID);
+			}
+		}
 
         // HERE MAKE CODE FOR ALLOURDISSEMENT
-		if ((Input.GetButtonUp("Allourdissement_P"+ playerID) || (Input.GetKeyDown(KeyCode.H) && playerID == 1))
-			&& canMove)
+		if (Input.GetButtonUp("Allourdissement_P"+ playerID) || (Input.GetKeyDown(KeyCode.H) && playerID == 1))
         {
-            print("Bite" +playerID);
 			Slam (slamForce);
         }
 
@@ -101,7 +98,6 @@ public class PlayerController : MonoBehaviour {
 
     public float GetMaxSpeed() { return maxSpeed;}
     public void SetMaxSpeed(float max) { maxSpeed = max; }
-
 
 	public void SetCanMove(bool value) { canMove = value; }
 }
