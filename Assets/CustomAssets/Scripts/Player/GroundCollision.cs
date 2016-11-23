@@ -39,17 +39,22 @@ public class GroundCollision : MonoBehaviour {
     *
     */
     void OnCollisionEnter2D(Collision2D col)
-    {
-        if (col.gameObject.tag == "Ground" && gameObject.transform.position.y > col.gameObject.transform.position.y)
-        {
-            if (timeCollisions.Count == 0)
-                GetComponentInParent<PlayerController>().SetAnimation("Ground", true);
-            timeCollisions.Add(Time.time);
+	{
+		if (col.gameObject.tag == "Ground" && gameObject.transform.position.y > col.gameObject.transform.position.y)
+		{
 			GetComponentInParent<PlayerController> ().SetCanMove (true);
-        }
-        if (col.gameObject.tag == "Sliders" && gameObject.transform.position.y <= col.gameObject.transform.position.y)
-            slide.Add(col.gameObject);
-    }
+			if (timeCollisions.Count == 0) {
+				GetComponentInParent<PlayerController> ().SetAnimation ("Ground", true);
+			}
+
+			timeCollisions.Add (Time.time);
+		}
+		if (col.gameObject.tag == "Sliders" && gameObject.transform.position.y <= col.gameObject.transform.position.y)
+		{
+			GetComponentInParent<PlayerController> ().SetCanMove (true);
+			slide.Add (col.gameObject);
+		}
+	}
 
     void OnCollisionStay2d(Collision2D col)
     {
