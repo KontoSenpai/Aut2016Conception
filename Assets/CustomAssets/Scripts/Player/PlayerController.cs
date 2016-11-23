@@ -6,12 +6,16 @@ public class PlayerController : MonoBehaviour {
 	private float maxSpeed = 5f;
     private float currentSpeed = 0f;
 	private float slamForce = 800f;
+	private float slamPrepForce = 100f;
 
     private bool facingRight = true;
 	private bool canMove = true;
 
 	private Rigidbody2D rb;
-    private int playerID;
+    
+	private int playerID;
+	private float slamCD = 1.0f;
+	private float nextUsage;
 
     Animator animator;
 
@@ -35,9 +39,9 @@ public class PlayerController : MonoBehaviour {
 		}
 
         // HERE MAKE CODE FOR ALLOURDISSEMENT
-		if (Input.GetButtonUp("Allourdissement_P"+ playerID) || (Input.GetKeyDown(KeyCode.H) && playerID == 1))
+		if ((Input.GetButtonUp("Allourdissement_P"+ playerID) || (Input.GetKeyDown(KeyCode.H) && playerID == 1)) && Time.time > nextUsage)
         {
-			Slam (slamForce);
+			Slam();
         }
 
         if (currentSpeed <= maxSpeed || currentSpeed > maxSpeed)
@@ -84,16 +88,25 @@ public class PlayerController : MonoBehaviour {
         rb.AddForce(Vector2.up * force);
     }
 
-	public void Slam( float force)
+	public void Slam()
 	{
-		SetCanMove (false);
-		//rb.gravityScale = 6;
+		SetCanMove (false);	
+		nextUsage = Time.time + slamCD;
+		//
+		rb.gravityScale = 0;
 		Vector3 tmp = rb.velocity;
 		tmp.x = 0.0f;
 		tmp.y = 0.0f;
 		tmp.z = 0.0f;
 		rb.velocity = tmp;
-		rb.AddForce(Vector2.up * -force);
+		rb.AddForce(Vector2.up * slamPrepForce);
+		StartCoroutine (Delay ());
+	}
+
+	IEnumerator Delay() {		
+		yield return new WaitForSeconds(0.25f);
+		rb.gravityScale = 3;
+		rb.AddForce(Vector2.up * -slamForce);
 	}
 
     public float GetMaxSpeed() { return maxSpeed;}
