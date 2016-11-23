@@ -31,6 +31,7 @@ public class HUD : MonoBehaviour {
 
 		//Get player using the tag "Player" sort alphabeticaly and then send as an array
 		players = GameObject.FindGameObjectsWithTag("Player").OrderBy(go =>go.name).ToArray();
+		//Debug.Log (GameObject.FindGameObjectsWithTag("Player").ToString());
 		playerCurrentLife = new int[players.Length];
 		playerPreviousLife = new int[players.Length];
 		playerMaxLife = new int[players.Length];
