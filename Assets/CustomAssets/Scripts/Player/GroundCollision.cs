@@ -43,9 +43,11 @@ public class GroundCollision : MonoBehaviour {
 		if (col.gameObject.tag == "Ground" && gameObject.transform.position.y > col.gameObject.transform.position.y)
 		{
 			GetComponentInParent<PlayerController> ().SetCanMove (true);
-			if (timeCollisions.Count == 0) {
+			if (timeCollisions.Count == 0)
+            {
 				GetComponentInParent<PlayerController> ().SetAnimation ("Ground", true);
-			}
+                GetComponentInParent<PlayerController>().SetAnimation("Stomp", false);
+            }
 
 			timeCollisions.Add (Time.time);
 		}
