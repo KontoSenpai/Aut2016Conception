@@ -33,7 +33,6 @@ public class PlayerStatus : MonoBehaviour {
 			GetComponent<PlayerController> ().SetCanMove (true);
 			if (currentLife > 0) {
 				currentLife--;
-
 				vulnerable = false;
 				invulnerabilityStart = Time.time;
 			} 

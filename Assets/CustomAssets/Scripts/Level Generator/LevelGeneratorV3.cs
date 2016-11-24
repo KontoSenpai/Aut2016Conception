@@ -42,14 +42,16 @@ public class LevelGeneratorV3 : MonoBehaviour {
 
     void Update()
     {
-        if( Input.GetKeyDown("space"))
-        {
-            Refresh();
-        }
+        if (Input.GetKeyDown("space"))
+            Refresh(false);
+        if (Input.GetKeyDown("g"))
+            Refresh(true);
     }
 
-    private void Refresh()
+    private void Refresh(bool nextRound)
     {
+        if( nextRound && round < 3)
+            round++;
         Destroy(blocksParent);
         Destroy(spawnsParent);
         Destroy(trapsParent);
@@ -80,7 +82,10 @@ public class LevelGeneratorV3 : MonoBehaviour {
                 PlaceBlocks(i);
             GetComponent<SpriteChange>().ChangeSprites(gridBlocks, boundsRows, boundsBottom);
         }
-        SpawnTraps();
+        if (round == 1)
+            SpawnTraps();
+        else
+            SpawnDynamicTraps();
         SpawnPickup();
         PlayerStarts();
     }
@@ -97,7 +102,10 @@ public class LevelGeneratorV3 : MonoBehaviour {
         {
             GameObject b = Instantiate(blocksF, new Vector3(-1, y, 0), transform.rotation) as GameObject;
             b.transform.parent = blocksParent.transform;
-            b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFull(3);
+            if (round == 1)
+                b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFull(3);
+            else
+                b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFullSimple();
             boundsRows[indy] = b;
             indy++;
         }
@@ -106,7 +114,10 @@ public class LevelGeneratorV3 : MonoBehaviour {
         {
             GameObject b = Instantiate(blocksF, new Vector3(20, y, 0), transform.rotation) as GameObject;
             b.transform.parent = blocksParent.transform;
-            b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFull(0);
+            if( round == 1)
+                b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFull(0);
+            else
+                b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFullSimple();
             boundsRows[indy] = b;
             indy++;
         }
@@ -115,15 +126,24 @@ public class LevelGeneratorV3 : MonoBehaviour {
         {
             GameObject b = Instantiate(blocks, new Vector3(x, -0.5f, 0), transform.rotation) as GameObject;
             b.transform.parent = blocksParent.transform;
-            b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSprite(6);
+            if (round == 1)
+                b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSprite(6);
+            else
+                b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteSimple();
             boundsBottom[x] = b;
         }
-        GameObject bl = Instantiate(blocksF, new Vector3(-1, -1, 0), transform.rotation) as GameObject;
+        GameObject bl = Instantiate(blocks, new Vector3(-1, -1, 0), transform.rotation) as GameObject;
         bl.transform.parent = blocksParent.transform;
-        bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFull(8);
-        bl = Instantiate(blocksF, new Vector3(20, -1, 0), transform.rotation) as GameObject;
+        if (round == 1)
+            bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSprite(6);
+        else
+            bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteSimple();
+        bl = Instantiate(blocks, new Vector3(20, -1, 0), transform.rotation) as GameObject;
         bl.transform.parent = blocksParent.transform;
-        bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFull(8);
+        if (round == 1)
+            bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSprite(6);
+        else
+            bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteSimple();
     }
 
     /**Function to generate a blocks on a line of the level grid
@@ -253,9 +273,65 @@ public class LevelGeneratorV3 : MonoBehaviour {
                 int randomOfPotentials = Random.Range(0, potentials.Count);
                 string kappaString = potentials[randomOfPotentials];
                 string[] splittedString = kappaString.Split(new char[] { '-' });
-                GameObject t = Instantiate(trapObject[round-1], new Vector3(IntParseFast(splittedString[0]), IntParseFast(splittedString[1]) - 0.25f, 0), transform.rotation) as GameObject;
+                GameObject t = Instantiate(trapObject[0], new Vector3(IntParseFast(splittedString[0]), IntParseFast(splittedString[1]) - 0.25f, 0), transform.rotation) as GameObject;
                 t.transform.parent = trapsParent.transform;
-                gridIndexes[IntParseFast(splittedString[0])] [IntParseFast(splittedString[1])] = 3;
+                gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] = 3;
+            }
+        }
+    }
+
+    private void SpawnDynamicTraps()
+    {
+        if (generateBlocks)
+        {
+            List<string> potentials = new List<string>();
+            List<bool> faceLeft = new List<bool>();
+            for (int x = 0; x < gridIndexes.Length; x++)
+            {
+                for (int y = 0; y < gridIndexes[x].Length; y++)
+                {
+                    if (gridIndexes[x][y] == 1)
+                    {
+                        if (round == 2)
+                        {
+                            if (y > 0 && gridIndexes[x][y - 1] != 1)
+                                potentials.Add(x + "-" + y);
+                        }
+                        else if (round == 3)
+                        {
+                            if ( x > 1 && gridIndexes[x - 1][y] != 1 && gridIndexes[x - 2][y] != 1)
+                            {
+                                potentials.Add(x + "-" + y);
+                                faceLeft.Add(true);
+                            }
+                            else if( x < 18 && gridIndexes[x + 1][y] != 1 && gridIndexes[x + 2][y] != 1)
+                            {
+                                potentials.Add(x + "-" + y);
+                                faceLeft.Add(false);
+                            }
+                        }
+                    }
+                }
+            }
+            for (int trap = 0; trap < nbTraps; trap++)
+            {
+                int randomOfPotentials = Random.Range(0, potentials.Count);
+                string kappaString = potentials[randomOfPotentials];
+                string[] splittedString = kappaString.Split(new char[] { '-' });
+                if (round == 2 && gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] != 4)
+                {
+                    GameObject t = Instantiate(trapObject[1], new Vector3(IntParseFast(splittedString[0]), IntParseFast(splittedString[1]) - 0.25f, 0), transform.rotation) as GameObject;
+                    t.transform.parent = trapsParent.transform;
+                    t.GetComponent<DynamicTrapSpawner>().InitializeCave();
+                    gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] = 4;
+                }
+                else if (round == 3)
+                {
+                    GameObject t = Instantiate(trapObject[1], new Vector3(IntParseFast(splittedString[0]), IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
+                    t.transform.parent = trapsParent.transform;
+                    t.GetComponent<DynamicTrapSpawner>().InitializeColiseum(faceLeft[randomOfPotentials]);
+                    gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] = 4;
+                }
             }
         }
     }

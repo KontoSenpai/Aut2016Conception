@@ -19,16 +19,16 @@ public class PickupSpeed : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if(other.gameObject.tag=="Player")
-            changeSpeed(other);
+        if(other.transform.parent.tag=="Player")
+            changeSpeed(other.transform.parent.gameObject);
     }
 
-    public void changeSpeed(Collider2D player)
+    public void changeSpeed(GameObject player)
     {
 
         //Save the preview speed and set the new
-        maxSpeed = player.gameObject.GetComponentInParent<PlayerController>().GetMaxSpeed();
-        player.gameObject.GetComponentInParent<PlayerController>().SetMaxSpeed(newMaxSpeed);
+        maxSpeed = player.GetComponent<PlayerController>().GetMaxSpeed();
+        player.GetComponent<PlayerController>().SetMaxSpeed(newMaxSpeed);
 
         //wait active time and set to the preview speed and destroy the pickup
         StartCoroutine(wait(player, maxSpeed));
@@ -39,19 +39,12 @@ public class PickupSpeed : MonoBehaviour
         //put the pickup to invisible 
         GetComponent<BoxCollider2D>().enabled = false;
         GetComponent<Renderer>().enabled = false;
-
-
     }
 
-    private IEnumerator wait(Collider2D player, float maxSpeed)
+    private IEnumerator wait(GameObject player, float maxSpeed)
     {
         yield return new WaitForSeconds(activeTime);
-
-        player.gameObject.GetComponentInParent<PlayerController>().SetMaxSpeed(maxSpeed);
-
+        player.GetComponent<PlayerController>().SetMaxSpeed(maxSpeed);
         Destroy(gameObject);
     }
-
-
-    
 }

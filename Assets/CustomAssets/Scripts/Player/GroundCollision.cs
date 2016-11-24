@@ -56,11 +56,6 @@ public class GroundCollision : MonoBehaviour {
 		}
 	}
 
-    void OnCollisionStay2d(Collision2D col)
-    {
-
-    }
-
     void OnCollisionExit2D(Collision2D col)
     {
         if(col.gameObject.tag == "Sliders")
