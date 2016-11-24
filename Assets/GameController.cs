@@ -20,11 +20,11 @@ public class GameController : MonoBehaviour {
 		}
 
 		if (gameOver == true) {
-			if (Input.GetKeyDown (KeyCode.R)) {
+			if (Input.GetKeyDown (KeyCode.R) || (Input.GetJoystickNames ().Length > 0 && Input.GetButtonDown("Submit"))) {
 				Time.timeScale = 1;
 				Application.LoadLevel (Application.loadedLevel);
 			} 
-			else if (Input.GetKeyDown (KeyCode.T)) {
+			else if (Input.GetKeyDown (KeyCode.T)|| (Input.GetJoystickNames ().Length > 0 && Input.GetButtonDown("Cancel"))) {
 				Quit ();
 			}
 		}
