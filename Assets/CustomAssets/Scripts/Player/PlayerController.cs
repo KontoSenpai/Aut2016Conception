@@ -92,6 +92,7 @@ public class PlayerController : MonoBehaviour {
 	{
 		SetCanMove (false);	
 		nextUsage = Time.time + slamCD;
+        SetAnimation("Stomp",true);
 		//
 		rb.gravityScale = 0;
 		Vector3 tmp = rb.velocity;
@@ -103,7 +104,8 @@ public class PlayerController : MonoBehaviour {
 		StartCoroutine (Delay ());
 	}
 
-	IEnumerator Delay() {		
+	IEnumerator Delay()
+    {		
 		yield return new WaitForSeconds(0.25f);
 		rb.gravityScale = 3;
 		rb.AddForce(Vector2.up * -slamForce);
