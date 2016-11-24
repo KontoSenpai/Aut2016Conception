@@ -7,7 +7,7 @@ public class SpawnPickUp : MonoBehaviour {
     public GameObject[] pickUp;
     public float SpawnTimer;
     public bool pickupIsActif = true;
-    public float timebeforespawn;
+    private float timebeforespawn;
 	// Use this for initialization
 	void Start ()
     {

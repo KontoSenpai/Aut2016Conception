@@ -11,10 +11,22 @@ public class PickupSpeed : MonoBehaviour
     private float maxSpeed;
     public bool isActif = true;
 
+    //use for floating the pickup
+    private float y0;
+    public float amplitudeAnimation = 0.1f;
+    public float timeAnimation = 1.2f;
+
     void Start()
     {
         //source = gameObject.GetComponent<AudioSource>();
         GetComponentInParent<SpawnPickUp>().pickupIsActif = true;
+        y0 = this.transform.position.y;
+    }
+
+    void Update()
+    {
+        // make float the pickup
+        transform.position = new Vector3 (transform.position.x, y0 + (amplitudeAnimation * Mathf.Sin(timeAnimation * Time.time)), transform.position.z);
     }
 
     void OnTriggerEnter2D(Collider2D other)

@@ -8,11 +8,22 @@ public class PickupInvincible : MonoBehaviour {
 
     public float activeTime = 2;
     //public float volumeRange = 1f;
-    // Use this for initialization
+
+    //use for floating the pickup
+    private float y0;
+    public float amplitudeAnimation = 0.1f;
+    public float timeAnimation = 2f;
     void Start()
     {
         //source = gameObject.GetComponent<AudioSource>();
         GetComponentInParent<SpawnPickUp>().pickupIsActif = true;
+        y0 = this.transform.position.y;
+    }
+
+    void Update()
+    {
+        // make float the pickup
+        transform.position = new Vector3(transform.position.x, y0 + (amplitudeAnimation * Mathf.Sin(timeAnimation * Time.time)), transform.position.z);
     }
 
     void OnTriggerEnter2D(Collider2D other)
