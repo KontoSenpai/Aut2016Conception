@@ -23,14 +23,16 @@ public class PlayerStatus : MonoBehaviour {
             vulnerable = true;
         if( currentLife == 0)
         {
-            Destroy(gameObject);
+			GameObject gameController = GameObject.FindGameObjectWithTag ("GameController");
+			if (gameController != null) {
+				gameController.GetComponent<GameController>().GameOver(gameObject);
+			}            
             //Fin du jeu
         }
     }
     public void Hurt()
     {
 		if (gameObject != null) {			
-			GetComponent<PlayerController> ().SetCanMove (true);
 			if (currentLife > 0) {
 				currentLife--;
 				vulnerable = false;

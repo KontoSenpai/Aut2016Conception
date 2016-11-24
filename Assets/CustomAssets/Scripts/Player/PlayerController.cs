@@ -113,4 +113,5 @@ public class PlayerController : MonoBehaviour {
     public void SetMaxSpeed(float max) { maxSpeed = max; }
 
 	public void SetCanMove(bool value) { canMove = value; }
+	public bool GetCanMove() { return canMove; }
 }
