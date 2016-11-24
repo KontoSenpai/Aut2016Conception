@@ -6,6 +6,7 @@ public class GameController : MonoBehaviour {
 	public Transform canvas;
 
 	private GameObject[] players;
+	private bool gameOver = false;
 
 	void Start() {
 	
@@ -16,6 +17,16 @@ public class GameController : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Escape))
 		{
 			Pause();
+		}
+
+		if (gameOver == true) {
+			if (Input.GetKeyDown (KeyCode.R)) {
+				Time.timeScale = 1;
+				Application.LoadLevel (Application.loadedLevel);
+			} 
+			else if (Input.GetKeyDown (KeyCode.T)) {
+				Quit ();
+			}
 		}
 	}
 
@@ -47,6 +58,7 @@ public class GameController : MonoBehaviour {
 	}
 
 	public void GameOver(GameObject player) {
+		
 		int idplayerDead = player.GetComponent<PlayerStatus> ().GetID();
 
 		foreach (Transform child in canvas) {
@@ -65,6 +77,6 @@ public class GameController : MonoBehaviour {
 				}
 			}
 		}
-
+		gameOver = true;
 	}
 }
