@@ -92,21 +92,38 @@ public class TrapBehavior : MonoBehaviour
                 GetComponentInParent<DynamicTrapSpawner>().SetDeathTimer(Time.time);
                 Destroy(gameObject.transform.parent.gameObject);
             }
+            else if (col.name.Contains("Half") || col.name.Contains("Full"))
+            {
+                if( gameObject.transform.parent.name.Contains("Cave"))
+                {
+                    Vector3 pos = gameObject.transform.parent.position;
+                    pos.y -= 0.2f;
+                    gameObject.transform.parent.position = pos;
+                }
+                else if(gameObject.transform.parent.name.Contains("Coliseum"))
+                {
+                    if( left)
+                    {
+                        Vector3 pos = gameObject.transform.parent.position;
+                        pos.x -= 0.2f;
+                        gameObject.transform.parent.position = pos;
+                    }
+                    else
+                    {
+                        Vector3 pos = gameObject.transform.parent.position;
+                        pos.x += 0.2f;
+                        gameObject.transform.parent.position = pos;
+                    }
+                }
+                rb.constraints = RigidbodyConstraints2D.FreezePosition | RigidbodyConstraints2D.FreezeRotation;
+                markedForDeath = true;
+                StartCoroutine(WaitForDeath(2));
+            }
         }
         else
         {
             if (col.transform.parent.tag.Equals("Player") && col.GetComponentInParent<PlayerStatus>().IsVulnerable())
                 col.GetComponentInParent<PlayerStatus>().Hurt();
-        }
-    }
-
-    void OnCollisionEnter2D(Collision2D col)
-    {
-        if( gameObject.transform.parent.name.Contains("Dynamic") && !col.transform.parent.tag.Equals("Player"))
-        {
-            rb.constraints = RigidbodyConstraints2D.FreezePosition | RigidbodyConstraints2D.FreezeRotation;
-            markedForDeath = true;
-            StartCoroutine(WaitForDeath(2));
         }
     }
 }

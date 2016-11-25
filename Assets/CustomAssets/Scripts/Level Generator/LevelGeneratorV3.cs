@@ -62,8 +62,8 @@ public class LevelGeneratorV3 : MonoBehaviour {
             gridBlocks = new GameObject[20][];
             for (int i = 0; i < 20; i++)
             {
-                gridIndexes[i] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-                gridBlocks[i] = new GameObject[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null };
+                gridIndexes[i] = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+                gridBlocks[i] = new GameObject[] { null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null};
             }
             GenerateRandoms();
             for (int i = 0; i < 17; i++)
@@ -109,7 +109,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
             boundsRows[indy] = b;
             indy++;
         }
-        //BOTTOM COLUMN
+        //BOTTOM ROW
         for( int x = 0; x < 20; x++)
         {
             GameObject b = Instantiate(blocks, new Vector3(x, -0.5f, 0), transform.rotation) as GameObject;
@@ -120,16 +120,34 @@ public class LevelGeneratorV3 : MonoBehaviour {
                 b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteSimple();
             boundsBottom[x] = b;
         }
-        GameObject bl = Instantiate(blocks, new Vector3(-1, -1, 0), transform.rotation) as GameObject;
+        //TOP ROW
+        for (int x = 0; x < 20; x++)
+        {
+            GameObject b = Instantiate(blocksF, new Vector3(x, 18, 0), transform.rotation) as GameObject;
+            GameObject b2 = Instantiate(blocks, new Vector3(x, 19, 0), transform.rotation) as GameObject;
+            b.transform.parent = blocksParent.transform;
+            b2.transform.parent = blocksParent.transform;
+            if (round == 1)
+            {
+                b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFull(8);
+                b2.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSprite(6);
+            }
+            else
+            {
+                b.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteFullSimple();
+                b2.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteSimple();
+            }
+        }
+        GameObject bl = Instantiate(blocks, new Vector3(-1, -0.5f, 0), transform.rotation) as GameObject;
         bl.transform.parent = blocksParent.transform;
         if (round == 1)
-            bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSprite(6);
+            bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSprite(7);
         else
             bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteSimple();
-        bl = Instantiate(blocks, new Vector3(20, -1, 0), transform.rotation) as GameObject;
+        bl = Instantiate(blocks, new Vector3(20, -0.5f, 0), transform.rotation) as GameObject;
         bl.transform.parent = blocksParent.transform;
         if (round == 1)
-            bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSprite(6);
+            bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSprite(7);
         else
             bl.GetComponentInChildren<SpriteRenderer>().sprite = kappa.GetSpriteSimple();
     }
@@ -198,10 +216,13 @@ public class LevelGeneratorV3 : MonoBehaviour {
                 int randomOfPotentials = Random.Range(0, potentials.Count);
                 string kappaString = potentials[randomOfPotentials];
                 string[] splittedString = kappaString.Split(new char[] { '-' });
+                if( gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] != 4)
+                {
                     GameObject spawn = Instantiate(playerSpawn, new Vector3(IntParseFast(splittedString[0]) + .5f, IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
                     spawn.transform.parent = spawnsParent.transform;
                     players.Add(spawn.GetComponent<SpawnPlayer>().Spawn(player + 1));
                     gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] = 4;
+                }
             }
         }
         else
@@ -317,7 +338,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
                     t.GetComponent<DynamicTrapSpawner>().InitializeCave();
                     gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] = 4;
                 }
-                else if (round == 3)
+                else if (round == 3 && gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] != 4)
                 {
                     GameObject t = Instantiate(trapObject[1], new Vector3(IntParseFast(splittedString[0]), IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
                     t.transform.parent = trapsParent.transform;
