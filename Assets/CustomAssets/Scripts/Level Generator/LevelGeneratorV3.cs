@@ -76,6 +76,8 @@ public class LevelGeneratorV3 : MonoBehaviour {
             SpawnDynamicTraps(round);
         SpawnPickup();
         PlayerStarts();
+		GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
+		gameController.GetComponent<HUD>().ResetTimer();
     }
 
     /**Function to create level boundaries
@@ -231,10 +233,9 @@ public class LevelGeneratorV3 : MonoBehaviour {
             {
                 GameObject spawn = Instantiate(playerSpawn, new Vector3(player * 10 + 0.5f, player*10 + 0.5f, 0), transform.rotation) as GameObject;
                 spawn.transform.parent = spawnsParent.transform;
-                spawn.GetComponent<SpawnPlayer>().Spawn(player + 1);
+				spawn.GetComponent<SpawnPlayer>().Spawn(player + 1);
             }
         }
-
     }
 
     /** Function that spawn pickups

@@ -14,11 +14,11 @@ public class SpawnPlayer : MonoBehaviour
         player.transform.parent = transform;
         player.name = "Player " + index;
 		player.tag = "Player";
-		player.GetComponent<PlayerStatus>().SetID(index);
+		player.GetComponent<PlayerStatus> ().SetID (index);
 
-        //Initialize player HUD
-        GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
-        gameController.GetComponent<HUD>().CreateHeartUI(player);
+		//Initialize player HUD
+		GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
+		gameController.GetComponent<HUD>().UpdateHearts(player);
         return player;
     }
 }

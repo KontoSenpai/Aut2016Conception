@@ -25,13 +25,16 @@ public class HUD : MonoBehaviour {
 	private float canvasHight;
 	private float canvasWidth;
 
+	private GameObject timer;
+
 	public Transform canvas;
 	public GameObject heartPrefab;			//Prefab of heart showing in the UI
+	public GameObject countdownPrefab;
 
     public void Awake()
     {
       
-		heartPosY = Screen.height-heartPrefab.GetComponent<RectTransform>().rect.height;;
+		heartPosY = Screen.height-(heartPrefab.GetComponent<RectTransform>().rect.height/2)-10;
 		canvasWidth = Screen.width/2;//canvas.GetComponent<RectTransform>().rect.width;
 
         heartsListP1 = new List<GameObject>();
@@ -45,7 +48,31 @@ public class HUD : MonoBehaviour {
         }
     }
 
-	public void UpdateHUD(GameObject player)
+	public void ResetTimer() 
+	{
+		if (timer != null) {
+			DestroyTimer ();
+			CreateTimer ();
+		} 
+		else 
+		{
+			CreateTimer();
+		}
+
+	}
+
+	public void CreateTimer() 
+	{
+		timer = (GameObject)Instantiate(countdownPrefab, new Vector3(Screen.width/2, Screen.height, 0.0f), Quaternion.identity, hud);
+		timer.GetComponent<RectTransform> ().anchoredPosition = new Vector2 (0,-20);
+	}
+
+	public void DestroyTimer ()
+	{
+		Destroy (timer);
+	}
+
+	public void UpdateHearts(GameObject player)
     {
         //If the player exists
         if (player != null)
@@ -88,17 +115,19 @@ public class HUD : MonoBehaviour {
     {
         if (player.GetComponent<PlayerStatus>().GetID() == 1)
         {
-            foreach (GameObject heart in heartsListP1)
-            {
-                Destroy(heart);
-            }
+			if (heartsListP1.Count () != 0) {
+				foreach (GameObject heart in heartsListP1) {				
+					Destroy (heart);
+				}
+			}
         }
         else
         {
-            foreach (GameObject heart in heartsListP2)
-            {
-                Destroy(heart);
-            }
+			if (heartsListP2.Count () != 0) {
+				foreach (GameObject heart in heartsListP2) {
+					Destroy (heart);
+				}
+			}
         }
     }
 }

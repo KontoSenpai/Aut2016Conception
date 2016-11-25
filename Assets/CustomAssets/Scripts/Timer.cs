@@ -4,34 +4,26 @@ using UnityEngine.UI;
 
 public class Timer : MonoBehaviour {
 
-    public float time;
-
-    public Text timerText;
+    public float timer;
 
 	// Use this for initialization
 	void Start () {
-	
 	}
 	
 	// Update is called once per frame
 	void Update () {
 
-        time -= Time.deltaTime;
+		timer -= Time.deltaTime;
 
-        if (time <= 0)
+		if (timer <= 0)
         {
             //do some shit for ending/ continue game
-            time = 0;
+			timer = 0;
         }
 
-        int minute = (int) time / 60;
-        var seconds = time % 60;
+		int minute = (int) timer / 60;
+		var seconds = timer % 60;
 
-
-        timerText.text = string.Format("{0:00} : {1:00}", minute, seconds);
-        //Debug.Log(string.Format("{0:00} : {1:00}", minute, seconds));
-
-       
-	
+		gameObject.GetComponent<Text>().text = string.Format("{0:00} : {1:00}", minute, seconds);      
 	}
 }

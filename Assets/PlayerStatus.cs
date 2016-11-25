@@ -39,7 +39,7 @@ public class PlayerStatus : MonoBehaviour {
 				invulnerabilityStart = Time.time;
                 //Update player HUD
                 GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
-                gameController.GetComponent<HUD>().UpdateHUD(gameObject);
+				gameController.GetComponent<HUD>().UpdateHearts(gameObject);
             }
 		}
     }
