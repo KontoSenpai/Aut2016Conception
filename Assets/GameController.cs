@@ -1,25 +1,47 @@
 ﻿using UnityEngine;
-using System.Collections;
+using System.Collections.Generic;
 
 public class GameController : MonoBehaviour {
 
-	public Transform canvas;
+    public GameObject generator;
+    public Transform canvas;
 
-	private GameObject[] players;
-	private bool gameOver = false;
+    private int round = 1;
+	private List<GameObject> players;
+    int roundWins = 0; // methode sale pour définir le vainqueur : si >0 joueur 2, sinon joueur 1
+    private bool gameOver = false;
 
-	void Start() {
-	
-	}
-	// Update is called once per frame
-	void Update () {
+    void Start()
+    {
+        players = new List<GameObject>();
+        generator = Instantiate(generator, new Vector3(0, 0, 0), transform.rotation) as GameObject;
+        generator.name = "Generator";
+        generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+        players = generator.GetComponent<LevelGeneratorV3>().GetPlayers();
+        //GetComponent<HUD>().Refresh();
+    }
 
-		if (Input.GetKeyDown(KeyCode.Escape))
-		{
+	void Update ()
+    {
+        if (Input.GetKeyDown("space"))
+        {
+            generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+            players = generator.GetComponent<LevelGeneratorV3>().GetPlayers();
+            //GetComponent<HUD>().Refresh();
+        }
+        if (Input.GetKeyDown("g") && round < 3)
+        {
+            round++;
+            generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+            players = generator.GetComponent<LevelGeneratorV3>().GetPlayers();
+            //GetComponent<HUD>().Refresh();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
 			Pause();
-		}
 
-		if (gameOver == true) {
+		if(gameOver)
+        {
 			if (Input.GetKeyDown (KeyCode.R) || (Input.GetJoystickNames ().Length > 0 && Input.GetButtonDown("Submit"))) {
 				Time.timeScale = 1;
 				Application.LoadLevel (Application.loadedLevel);
@@ -29,9 +51,8 @@ public class GameController : MonoBehaviour {
 			}
 		}
 	}
-
-	public void Pause () {
-
+	public void Pause ()
+    {
 		//Get all child in the canvas
 		foreach (Transform child in canvas) {
 
@@ -44,33 +65,55 @@ public class GameController : MonoBehaviour {
 				child.gameObject.SetActive (false);
 				Time.timeScale = 1;
 			}
-
-
 		}
 	}
 
-	public void Resume() {
-		Pause ();
+	public void Resume()
+    {
+        Pause ();
 	}
 
-	public void Quit() {
+	public void Quit()
+    {
 		Application.Quit ();
 	}
 
-	public void GameOver(GameObject player) {
-		
-		int idplayerDead = player.GetComponent<PlayerStatus> ().GetID();
+    public void RoundEnd(GameObject deadPlayer)
+    {
+        if( deadPlayer.GetComponent<PlayerStatus>().GetID() == 1)
+            roundWins += 1;
+        else
+            roundWins -= 1;
+        if( round < 3)
+        {
+            round++;
+            generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+        }
+        else if( !gameOver)
+        {
+            GameOver();
+        }
+    }
 
-		foreach (Transform child in canvas) {
+	public void GameOver()
+    {
+        int idPlayer = 0;
+        if (roundWins < 0)
+            idPlayer = 2;
+        else
+            idPlayer = 1;
 
+		foreach (Transform child in canvas)
+        {
 			//Check if the child is part of the pause menu and if it is displayed or not
-			if (child.CompareTag ("VictoryUI") && child.gameObject.activeInHierarchy == false) {
+			if (child.CompareTag ("VictoryUI") && child.gameObject.activeInHierarchy == false)
+            {
 				child.gameObject.SetActive (true);
-
-				foreach (Transform children in child) {
-					
+				foreach (Transform children in child)
+                {
 					//Check if the child is part of the pause menu and if it is displayed or not
-					if (children.name.Contains(idplayerDead.ToString()) && child.gameObject.activeInHierarchy == true) {
+					if (children.name.Contains(idPlayer.ToString()) && child.gameObject.activeInHierarchy == true)
+                    {
 						children.gameObject.SetActive (false);
 						Time.timeScale = 0;
 					}

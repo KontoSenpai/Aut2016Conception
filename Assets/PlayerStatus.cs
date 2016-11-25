@@ -24,20 +24,23 @@ public class PlayerStatus : MonoBehaviour {
         if( currentLife == 0)
         {
 			GameObject gameController = GameObject.FindGameObjectWithTag ("GameController");
-			if (gameController != null) {
-				gameController.GetComponent<GameController>().GameOver(gameObject);
-			}            
-            //Fin du jeu
+			if (gameController != null)
+                gameController.GetComponent<GameController>().RoundEnd(gameObject);
         }
     }
     public void Hurt()
     {
-		if (gameObject != null) {			
-			if (currentLife > 0) {
+		if (gameObject != null)
+        {
+			if (currentLife > 0)
+            {
 				currentLife--;
 				vulnerable = false;
 				invulnerabilityStart = Time.time;
-			} 
+                //Update player HUD
+                GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
+                gameController.GetComponent<HUD>().UpdateHUD(gameObject);
+            }
 		}
     }
 

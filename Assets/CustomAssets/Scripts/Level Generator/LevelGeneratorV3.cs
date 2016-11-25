@@ -1,11 +1,9 @@
 ﻿using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
 public class LevelGeneratorV3 : MonoBehaviour {
 
-    public int round = 1;
     public bool generateBlocks; // Know if blocks must be created or not
     public GameObject playerSpawn; // Prefab handling player generation
     public GameObject pickupSpawn; // Prefab handling pickup generation
@@ -13,14 +11,13 @@ public class LevelGeneratorV3 : MonoBehaviour {
     public int nbPickup = 2; // Number of PickUp
     public int nbTraps = 10; // Number of traps in scene
     public GameObject[] trapObject; // Trap Styles
+    private List<GameObject> players;
 
     public GameObject blocks; // half-block prefabs
     public GameObject blocksF; // block prefabs
 
     private GameObject[] boundsRows = new GameObject[40];
     private GameObject[] boundsBottom = new GameObject[20];
-
-    private int rows = 17; // toal rows in level
 
     private int nombreHalf = 0; // Amount of half block placed
     private int nombreFull = 0; // Amount of full block placed
@@ -35,39 +32,30 @@ public class LevelGeneratorV3 : MonoBehaviour {
     private GameObject pickupsParent;
 
     SpriteChange kappa;
-    void Start()
+
+    void Awake()
     {
-        CreateContent();
+        players = new List<GameObject>();
     }
 
-    void Update()
+    public void Refresh(int round)
     {
-        if (Input.GetKeyDown("space"))
-            Refresh(false);
-        if (Input.GetKeyDown("g"))
-            Refresh(true);
-    }
-
-    private void Refresh(bool nextRound)
-    {
-        if( nextRound && round < 3)
-            round++;
         Destroy(blocksParent);
         Destroy(spawnsParent);
         Destroy(trapsParent);
         Destroy(pickupsParent);
-        CreateContent();
+        CreateContent(round);
     }
 
     /** Function called each round to generate a new layout
     *
     */
-    private void CreateContent()
+    public void CreateContent(int round)
     {
         kappa = GetComponent<SpriteChange>();
         kappa.SetSelection(round);
         CreateParents();
-        CreateBounds();
+        CreateBounds(round);
         if (generateBlocks)
         {
             gridIndexes = new int[20][];
@@ -83,9 +71,9 @@ public class LevelGeneratorV3 : MonoBehaviour {
             GetComponent<SpriteChange>().ChangeSprites(gridBlocks, boundsRows, boundsBottom);
         }
         if (round == 1)
-            SpawnTraps();
+            SpawnTraps(round);
         else
-            SpawnDynamicTraps();
+            SpawnDynamicTraps(round);
         SpawnPickup();
         PlayerStarts();
     }
@@ -93,7 +81,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
     /**Function to create level boundaries
     *
     */
-    private void CreateBounds()
+    private void CreateBounds(int round)
     {
         int indy = 0;
         SpriteChange kappa = GetComponent<SpriteChange>();
@@ -210,9 +198,10 @@ public class LevelGeneratorV3 : MonoBehaviour {
                 int randomOfPotentials = Random.Range(0, potentials.Count);
                 string kappaString = potentials[randomOfPotentials];
                 string[] splittedString = kappaString.Split(new char[] { '-' });
-                GameObject spawn = Instantiate(playerSpawn, new Vector3(IntParseFast(splittedString[0]) + .5f, IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
-                spawn.transform.parent = spawnsParent.transform;
-                spawn.GetComponent<SpawnPlayer>().Spawn(player + 1);
+                    GameObject spawn = Instantiate(playerSpawn, new Vector3(IntParseFast(splittedString[0]) + .5f, IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
+                    spawn.transform.parent = spawnsParent.transform;
+                    players.Add(spawn.GetComponent<SpawnPlayer>().Spawn(player + 1));
+                    gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] = 4;
             }
         }
         else
@@ -227,6 +216,9 @@ public class LevelGeneratorV3 : MonoBehaviour {
 
     }
 
+    /** Function that spawn pickups
+    *
+    */
     private void SpawnPickup()
     {
         if (generateBlocks)
@@ -255,7 +247,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
     /** Function that places traps on cellblocks
     *
     */
-    private void SpawnTraps()
+    private void SpawnTraps(int round)
     {
         if (generateBlocks)
         {
@@ -280,7 +272,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
         }
     }
 
-    private void SpawnDynamicTraps()
+    private void SpawnDynamicTraps(int round)
     {
         if (generateBlocks)
         {
@@ -341,7 +333,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
     */
     private void GenerateRandoms()
     {
-        numberOfBlocks = new int[rows];
+        numberOfBlocks = new int[17];
         numberOfBlocks[0] = Random.Range(1, 4);
         numberOfBlocks[1] = Random.Range(0, 5);
         numberOfBlocks[2] = Random.Range(0, 9);
@@ -544,6 +536,8 @@ public class LevelGeneratorV3 : MonoBehaviour {
         pickupsParent.name = "Pickups";
         pickupsParent.transform.parent = transform;
     }
+
+    public List<GameObject> GetPlayers() { return players; }
 
     /** Fast and efficient way to parse
     * @Param value : desired string to convert to an int

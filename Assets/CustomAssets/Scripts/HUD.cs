@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using System.Linq;
+using System.Collections;
 
 public class HUD : MonoBehaviour {
 	
@@ -26,107 +27,77 @@ public class HUD : MonoBehaviour {
 	public Transform canvas;
 	public GameObject heartPrefab;			//Prefab of heart showing in the UI
 
+    public void Awake()
+    {
+      
+        canvasHight = canvas.GetComponent<RectTransform>().rect.height;
+        canvasWidth = canvas.GetComponent<RectTransform>().rect.width;
 
-	void Start() {
+        heartsListP1 = new List<GameObject>();
+        heartsListP2 = new List<GameObject>();
+       
+        //Find the gameobject HUD in the canvas
+        foreach (Transform child in canvas)
+        {
+            if (child.CompareTag("HUD") == true)
+                hud = child;
+        }
+    }
 
-		//Get player using the tag "Player" sort alphabeticaly and then send as an array
-		players = GameObject.FindGameObjectsWithTag("Player").OrderBy(go =>go.name).ToArray();
-		//Debug.Log (GameObject.FindGameObjectsWithTag("Player").ToString());
-		playerCurrentLife = new int[players.Length];
-		playerPreviousLife = new int[players.Length];
-		playerMaxLife = new int[players.Length];
+	public void UpdateHUD(GameObject player)
+    {
+        //If the player exists
+        if (player != null)
+        {
+                DestroyHeartUI(player);
+                CreateHeartUI(player);
+        }
+        else
+        {
+            DestroyHeartUI(player);
+        }
+    }
 
-		canvasHight = canvas.GetComponent<RectTransform> ().rect.height;
-		canvasWidth = canvas.GetComponent<RectTransform> ().rect.width;
+	public void CreateHeartUI(GameObject player)
+    {
+        int playerCurrentLife = player.GetComponent<PlayerStatus>().GetCurrentLife();
 
-		heartsListP1 = new List<GameObject>();
-		heartsListP2 = new List<GameObject>();
+        if (player.GetComponent<PlayerStatus>().GetID() == 1)
+        {
+            for (int i = 0; i < playerCurrentLife; i++)
+            {
+                GameObject heart = (GameObject)Instantiate(heartPrefab, new Vector3(heartPosXP1 + (i * threshold), heartPosY + canvasHight, 0.0f), Quaternion.identity, hud);
+                heart.transform.name = "Heart" + i.ToString() + player.name;
+                heartsListP1.Add(heart);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < playerCurrentLife; i++)
+            {
+                GameObject heart = (GameObject)Instantiate(heartPrefab, new Vector3(heartPosXP2 + (i * threshold), heartPosY + canvasHight, 0.0f), Quaternion.identity, hud);
+                heart.transform.name = "Heart" + i.ToString() + player.name;
+                heartsListP2.Add(heart);
+            }
+        }     
+    }
 
-		for (int i = 0; i<players.Length; i++) {
-			playerCurrentLife[i] = players[i].GetComponent<PlayerStatus>().GetCurrentLife();
-		}
-
-		for (int i = 0; i<players.Length; i++) {
-			playerMaxLife[i] = players[i].GetComponent<PlayerStatus>().GetMaxLife();
-		}
-
-		//Find the gameobject HUD in the canvas
-		foreach (Transform child in canvas) {
-			if (child.CompareTag ("HUD") == true) {
-				hud = child;
-			}
-		}
-
-		//Initialize Player 1 UI
-		CreateHeartUI(0);
-
-		//Initialize Player 2 UI
-		CreateHeartUI(1);
-	}
-
-	void Update() {
-
-		//Update the players UI
-		for (int i = 0; i < players.Length; i++) {
-
-			//If the player exists
-			if (players [i] != null) {
-				playerCurrentLife [i] = players [i].GetComponent<PlayerStatus> ().GetCurrentLife ();
-
-				if ((playerCurrentLife [i] <= playerMaxLife [i]) && (playerCurrentLife [i] != playerPreviousLife [i])) {
-					DestroyHeartUI (i);
-					CreateHeartUI (i);
-					playerPreviousLife [i] = playerCurrentLife [i];
-				}
-			}
-			else {
-				DestroyHeartUI (i);
-			}
-		}
-	}
-
-	private void CreateHeartUI(int player) {
-
-		//Player 1
-		if (player == 0) {
-			for (int i = 0; i < playerCurrentLife[0]; i++) {
-
-				GameObject heart = (GameObject)Instantiate (heartPrefab,
-					new Vector3(heartPosXP1 + (i * threshold), 
-						heartPosY + canvasHight, 0.0f),Quaternion.identity, hud);
-
-				heart.transform.name = "Heart" + i.ToString() + players[0].name;
-				heartsListP1.Add(heart);
-			}
-		} 
-		//Player 2
-		else {
-			for (int i = 0; i < playerCurrentLife [1]; i++) {
-
-				GameObject heart = (GameObject)Instantiate (heartPrefab,
-					new Vector3 (heartPosXP2 + (i * threshold), 
-						heartPosY + canvasHight, 0.0f), Quaternion.identity, hud);
-
-				heart.transform.name = "Heart" + i.ToString () + players [1].name;
-				heartsListP2.Add (heart);
-			}
-		}
-	}
-
-	private void DestroyHeartUI(int player) {
-
-		//Player 1
-		if (player == 0) {
-			foreach (GameObject heart in heartsListP1) {
-				Destroy(heart);
-			}
-		}
-		//Player 2
-		else {
-			foreach (GameObject heart in heartsListP2) {
-				Destroy(heart);
-			}
-		}
-
-	}
+    //Destroy all heart
+	private void DestroyHeartUI(GameObject player)
+    {
+        if (player.GetComponent<PlayerStatus>().GetID() == 1)
+        {
+            foreach (GameObject heart in heartsListP1)
+            {
+                Destroy(heart);
+            }
+        }
+        else
+        {
+            foreach (GameObject heart in heartsListP2)
+            {
+                Destroy(heart);
+            }
+        }
+    }
 }
