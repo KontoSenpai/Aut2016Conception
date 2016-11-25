@@ -15,8 +15,7 @@ public class HUD : MonoBehaviour {
 	//Position X of Player 1 spawn of hearts (center screen - (distance between hearts + timer.length/2)
 	private int heartPosXP1 = (Screen.width/2)-(75*4) ;			
 	private int heartPosXP2 = (Screen.width/2)+(75*2);			//Position X of Player 2 spawn of hearts
-	private int heartPosY = Screen.height/2-100;			//Position Y of Players spawn of hearts
-
+	private float heartPosY;// = Screen.height/2-100;			//Position Y of Players spawn of hearts
 
 	private List<GameObject> heartsListP1;	//List of Player 1 hearts currently shown
 	private List<GameObject> heartsListP2;	//List of Player 2 hearts currently shown
@@ -32,7 +31,7 @@ public class HUD : MonoBehaviour {
     public void Awake()
     {
       
-		canvasHight = canvas.GetComponent<RectTransform>().rect.height;
+		heartPosY = Screen.height-heartPrefab.GetComponent<RectTransform>().rect.height;;
 		canvasWidth = Screen.width/2;//canvas.GetComponent<RectTransform>().rect.width;
 
         heartsListP1 = new List<GameObject>();
