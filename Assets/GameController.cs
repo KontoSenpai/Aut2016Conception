@@ -73,6 +73,10 @@ public class GameController : MonoBehaviour {
         Pause ();
 	}
 
+	public void Restart() {
+		Application.LoadLevel (Application.loadedLevel);
+	}
+
 	public void Quit()
     {
 		Application.Quit ();
