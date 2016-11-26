@@ -120,8 +120,11 @@ public class PlayerController : MonoBehaviour {
 		tmp.z = 0.0f;
 		rb.velocity = tmp;
 		rb.AddForce(Vector2.up * slamPrepForce);
-        //playsound
-        AudioSource.PlayClipAtPoint(slamSound, transform.position, volumeRange);
+
+        //playaudio
+        GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
+        gameController.GetComponent<GameController>().PlaySound("Slam", transform.position);
+
         StartCoroutine (Delay ());
 	}
 
