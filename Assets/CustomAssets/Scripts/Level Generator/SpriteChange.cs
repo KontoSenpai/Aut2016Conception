@@ -157,6 +157,8 @@ public class SpriteChange : MonoBehaviour {
             {
                 if (gridBlocks[x + 1][y].name.Contains("Half"))
                     gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[4];
+                if (gridBlocks[x + 1][y].name.Contains("Full"))
+                    gridBlocks[x][y].GetComponentInChildren<SpriteRenderer>().sprite = blocksFullV[8];
             }
         }
         //Dernière colonne
