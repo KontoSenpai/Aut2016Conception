@@ -44,6 +44,13 @@ public class PlayerController : MonoBehaviour {
 			Slam();
         }
 
+        print(rb.velocity);
+        if( rb.velocity.y > 10)
+        {
+            Vector2 v = rb.velocity;
+            v.y = 10;
+            rb.velocity = v;
+        }
         if (currentSpeed <= maxSpeed || currentSpeed > maxSpeed)
             AdjustSpeed(move);
 
@@ -51,8 +58,6 @@ public class PlayerController : MonoBehaviour {
 
 		if ((move > 0 && !facingRight) || (move < 0 && facingRight))
 			Flip ();
-		//else if (move < 0 && facingRight)
-		//	Flip();
 	}
 
     private void AdjustSpeed( float move)

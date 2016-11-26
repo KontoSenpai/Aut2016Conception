@@ -13,7 +13,6 @@ public class PlayerStatus : MonoBehaviour {
     //Variables used to handle player damage behavior
     private bool vulnerable = true;
     private bool blink = false;
-    public GameObject headCollider;
     //Variables linked to sprite rendering
     private SpriteRenderer rd;
     private float lastDisplay;
@@ -58,7 +57,6 @@ public class PlayerStatus : MonoBehaviour {
 				currentLife--;
 				vulnerable = false;
                 blink = true;
-                headCollider.SetActive(false);
                 StartCoroutine(WaitForBlink(invulnerabilityTime));
                 //Update player HUD
                 GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
@@ -73,7 +71,6 @@ public class PlayerStatus : MonoBehaviour {
         blink = false;
         vulnerable = true;
         rd.enabled = true;
-        headCollider.SetActive(true);
     }
 
 

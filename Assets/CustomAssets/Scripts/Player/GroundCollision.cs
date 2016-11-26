@@ -19,7 +19,6 @@ public class GroundCollision : MonoBehaviour {
             GetComponentInParent<PlayerController>().Jump(jumpForce);
             GetComponentInParent<PlayerController>().SetAnimation("Ground", false);
         }
-
         if (slide.Count > 0)
             GetComponentInParent<PlayerController>().Jump(slideForce);
     }
@@ -39,20 +38,18 @@ public class GroundCollision : MonoBehaviour {
     */
     void OnCollisionEnter2D(Collision2D col)
 	{
-		if (col.gameObject.tag == "Ground" && gameObject.transform.position.y > col.gameObject.transform.position.y)
+        GetComponentInParent<PlayerController>().SetCanMove(true);
+        if (col.gameObject.tag == "Ground" && gameObject.transform.position.y > col.gameObject.transform.position.y)
 		{
-			GetComponentInParent<PlayerController> ().SetCanMove (true);
 			if (timeCollisions.Count == 0)
             {
 				GetComponentInParent<PlayerController> ().SetAnimation ("Ground", true);
                 GetComponentInParent<PlayerController>().SetAnimation("Stomp", false);
             }
-
 			timeCollisions.Add (Time.time);
 		}
-		if (col.gameObject.tag == "Sliders" && gameObject.transform.position.y <= col.gameObject.transform.position.y)
+		if (col.gameObject.tag == "Sliders")
 		{
-			GetComponentInParent<PlayerController> ().SetCanMove (true);
 			slide.Add (col.gameObject);
 		}
 	}
