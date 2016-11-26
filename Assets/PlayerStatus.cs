@@ -10,6 +10,7 @@ public class PlayerStatus : MonoBehaviour {
     public bool invulnerablePickup = false;
     public int currentLife;
 	private int playerID;
+	private int roundWin = 0;
 
 	// Use this for initialization
 	void Awake ()
@@ -59,4 +60,7 @@ public class PlayerStatus : MonoBehaviour {
 
 	public int GetID(){return playerID;}
 	public void SetID(int id){playerID = id;}
+
+	public int GetRoundWin(){return roundWin;}
+	public void SetRoundWin(){roundWin++;}
 }

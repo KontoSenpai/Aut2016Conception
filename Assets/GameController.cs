@@ -9,7 +9,9 @@ public class GameController : MonoBehaviour {
     private int round = 1;
 	private List<GameObject> players;
     int roundWins = 0; // methode sale pour définir le vainqueur : si >0 joueur 2, sinon joueur 1
-    private bool gameOver = false;
+    
+	private bool gameOver = false;
+	private bool canPause = true;
 
     void Start()
     {
@@ -53,17 +55,18 @@ public class GameController : MonoBehaviour {
 	}
 	public void Pause ()
     {
-		//Get all child in the canvas
-		foreach (Transform child in canvas) {
+		if (canPause) {
+			//Get all child in the canvas
+			foreach (Transform child in canvas) {
 
-			//Check if the child is part of the pause menu and if it is displayed or not
-			if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == false) {
-				child.gameObject.SetActive (true);
-				Time.timeScale = 0;
-			}
-			else if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == true) {
-				child.gameObject.SetActive (false);
-				Time.timeScale = 1;
+				//Check if the child is part of the pause menu and if it is displayed or not
+				if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == false) {
+					child.gameObject.SetActive (true);
+					Time.timeScale = 0;
+				} else if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == true) {
+					child.gameObject.SetActive (false);
+					Time.timeScale = 1;
+				}
 			}
 		}
 	}
@@ -84,6 +87,24 @@ public class GameController : MonoBehaviour {
 
     public void RoundEnd(GameObject deadPlayer)
     {
+		foreach (GameObject player in GameObject.FindGameObjectsWithTag ("Player")) {
+			if (player.GetComponent<PlayerStatus> ().GetID () != deadPlayer.GetComponent<PlayerStatus> ().GetID ()) {
+				player.GetComponent<PlayerStatus> ().SetRoundWin ();
+			}
+		
+		}
+		if( round < 3)
+		{
+			round++;
+			RoundOver ();
+			generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+		}
+		else if( !gameOver)
+		{
+			GameOver(deadPlayer);
+		}
+
+		/*
         if( deadPlayer.GetComponent<PlayerStatus>().GetID() == 1)
             roundWins += 1;
         else
@@ -97,15 +118,22 @@ public class GameController : MonoBehaviour {
         {
             GameOver();
         }
+        */
     }
 
-	public void GameOver()
+	private void RoundOver() {
+		
+	}
+
+	private void GameOver(GameObject deadPlayer)
     {
-        int idPlayer = 0;
-        if (roundWins < 0)
+		int deadPlayerID = deadPlayer.GetComponent<PlayerStatus>().GetID();
+        
+		/*if (roundWins < 0)
             idPlayer = 2;
         else
             idPlayer = 1;
+		*/
 
 		foreach (Transform child in canvas)
         {
@@ -116,9 +144,10 @@ public class GameController : MonoBehaviour {
 				foreach (Transform children in child)
                 {
 					//Check if the child is part of the pause menu and if it is displayed or not
-					if (children.name.Contains(idPlayer.ToString()) && child.gameObject.activeInHierarchy == true)
+					if (children.name.Contains(deadPlayerID.ToString()) && child.gameObject.activeInHierarchy == true)
                     {
 						children.gameObject.SetActive (false);
+						canPause = false;
 						Time.timeScale = 0;
 					}
 				}
