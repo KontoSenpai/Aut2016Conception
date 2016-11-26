@@ -114,13 +114,12 @@ public class GameController : MonoBehaviour {
 	public void RoundStart() {
 
 		GetComponent<HUD> ().HidingRoundWinner ();
+		GetComponent<HUD> ().DisplayRoundBeginUI ();
 	}
     public void RoundEnd(GameObject deadPlayer)
     {
-		foreach (GameObject player in GameObject.FindGameObjectsWithTag ("Player"))
-        {
-			if (player.GetComponent<PlayerStatus> ().GetID () != deadPlayer.GetComponent<PlayerStatus> ().GetID ())
-            {
+		foreach (GameObject player in GameObject.FindGameObjectsWithTag ("Player")) {
+			if (player.GetComponent<PlayerStatus> ().GetID () != deadPlayer.GetComponent<PlayerStatus> ().GetID ()) {
 				player.GetComponent<PlayerStatus> ().AddRoundWin ();
 			}
 		

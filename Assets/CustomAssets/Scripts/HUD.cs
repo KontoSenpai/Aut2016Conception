@@ -148,8 +148,9 @@ public class HUD : MonoBehaviour {
 			}
 	
 	}
-	public void DisplayRoundWinner(GameObject deadPlayer, GameObject generator, int round)
-    {
+	public void DisplayRoundWinner(GameObject deadPlayer, GameObject generator, int round) {
+
+
 		int deadPlayerID = deadPlayer.GetComponent<PlayerStatus>().GetID();
 
 		Destroy (deadPlayer);
@@ -157,23 +158,20 @@ public class HUD : MonoBehaviour {
 		foreach (Transform child in canvas)
 		{
 			//Check if the child is part of the pause menu and if it is displayed or not
-			if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == false)
-            {
+			if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == false) {
 				child.gameObject.SetActive (true);
-				foreach (Transform children in child)
-                {
+				foreach (Transform children in child) {
 					//Check if the child is part of the pause menu and if it is displayed or not
-					if (children.name.Contains (deadPlayerID.ToString ()) && child.gameObject.activeInHierarchy == true)
-                    {
+					if (children.name.Contains (deadPlayerID.ToString ()) && child.gameObject.activeInHierarchy == true) {
 						children.gameObject.SetActive (false);
 						GetComponent<GameController> ().SetCanPause (false);
+
 						StartCoroutine (Delay (generator, round));
 					}
 				}
 			}
 		}
 	}
-
 	IEnumerator Delay(GameObject generator, int round)
 	{		
 
@@ -236,4 +234,85 @@ public class HUD : MonoBehaviour {
 			}
 		}
 	}
+
+	public void DisplayRoundBeginUI() {
+		DisplayReadyImage ();
+
+	}
+
+	private void DisplayReadyImage() {
+		foreach (Transform child in canvas)
+		{
+			//Check if the child is part of the pause menu and if it is displayed or not
+			if (child.CompareTag ("RoundBeginUI") && child.gameObject.activeInHierarchy == false) {
+				child.gameObject.SetActive (true);
+				foreach (Transform children in child) {
+					//Check if the child is part of the pause menu and if it is displayed or not
+					if (children.name.Contains ("Fight") && child.gameObject.activeInHierarchy == true) {
+						children.gameObject.SetActive (false);
+						GetComponent<GameController> ().SetCanPause (false);
+
+						StartCoroutine (DelayReadyImage (children));
+					}
+				}
+			}
+		}
+	}
+
+	IEnumerator DelayReadyImage(Transform children)
+	{		
+
+		Time.timeScale = 0;
+
+		//Wait five second before continuing
+		float pauseEndTime = Time.realtimeSinceStartup + 2;
+
+		while (Time.realtimeSinceStartup < pauseEndTime)
+		{
+			yield return 0;
+		}
+
+		DisplayFightImage (children);
+		//Time.timeScale = 1;
+	}
+
+	private void DisplayFightImage(Transform fightImage) {
+		
+
+		foreach (Transform child in canvas)
+		{
+			//Check if the child is part of the pause menu and if it is displayed or not
+			if (child.CompareTag ("RoundBeginUI") && child.gameObject.activeInHierarchy == true) {
+				child.gameObject.SetActive (true);
+
+				foreach (Transform children in child) {
+					//Check if the child is part of the pause menu and if it is displayed or not
+					if (children.name.Contains ("Ready") && child.gameObject.activeInHierarchy == true) {
+						
+						children.gameObject.SetActive (false);
+						fightImage.gameObject.SetActive (true);
+						GetComponent<GameController> ().SetCanPause (false);
+
+						StartCoroutine (DelayFightImage (child, children));
+					}
+				}
+			}
+		}
+	}
+	IEnumerator DelayFightImage(Transform roundBeginUI, Transform readyImage)
+	{	
+		//Wait five second before continuing
+		float pauseEndTime = Time.realtimeSinceStartup + 1;
+
+		while (Time.realtimeSinceStartup < pauseEndTime)
+		{
+			yield return 0;
+		}
+		readyImage.gameObject.SetActive (true);
+		roundBeginUI.gameObject.SetActive (false);
+		GetComponent<GameController> ().SetCanPause (true);
+		Time.timeScale = 1;
+	}
+
+
 }
