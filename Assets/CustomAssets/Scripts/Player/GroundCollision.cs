@@ -48,22 +48,17 @@ public class GroundCollision : MonoBehaviour {
             }
 			timeCollisions.Add (Time.time);
 		}
-		if (col.gameObject.tag.Equals("Sliders") && gameObject.GetComponentInParent<PlayerController>().GetMove() != 0)
+		else if (col.gameObject.tag.Equals("Sliders") )
         {
             if ( col.gameObject.transform.parent.name.Contains("Half"))
             {
-                if (gameObject.transform.position.y < col.gameObject.transform.position.y + 0.4f)
+                if (gameObject.transform.position.y < col.gameObject.transform.position.y + 0.3f && (gameObject.GetComponentInParent<PlayerController>().GetMove() < -0.3 || gameObject.GetComponentInParent<PlayerController>().GetMove() > 0.3))
                     slide.Add(col.gameObject);
-                else
+                else if (gameObject.transform.position.y > col.gameObject.transform.position.y + 0.3f && timeCollisions.Count == 0)
                     timeCollisions.Add(Time.time);
             }
-            else if( col.gameObject.transform.parent.name.Contains("Full"))
-            {
-                if (gameObject.transform.position.y < col.gameObject.transform.position.y + 0.9f)
+            else if( col.gameObject.transform.parent.name.Contains("Full") && (gameObject.GetComponentInParent<PlayerController>().GetMove() < -0.3 || gameObject.GetComponentInParent<PlayerController>().GetMove() > 0.3))
                     slide.Add(col.gameObject);
-                else
-                    timeCollisions.Add(Time.time);
-            }
         }
 
 	}

@@ -37,11 +37,6 @@ public class PlayerController : MonoBehaviour {
     {
 		if (canMove)
         {
-            if( playerID == 1)
-            {
-                print(move);
-            }
-
 			if (Input.GetJoystickNames ().Length > 0)
 				move = Input.GetAxis ("Horizontal_P" + playerID);
 			else
