@@ -76,8 +76,12 @@ public class LevelGeneratorV3 : MonoBehaviour {
             SpawnDynamicTraps(round);
         SpawnPickup();
         PlayerStarts();
+
 		GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
-		gameController.GetComponent<HUD>().ResetTimer();
+		if (gameController != null) {
+			gameController.GetComponent<HUD>().ResetTimer();
+			gameController.GetComponent<GameController> ().RoundStart ();
+		}
     }
 
     /**Function to create level boundaries

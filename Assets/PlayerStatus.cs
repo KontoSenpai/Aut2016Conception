@@ -62,5 +62,5 @@ public class PlayerStatus : MonoBehaviour {
 	public void SetID(int id){playerID = id;}
 
 	public int GetRoundWin(){return roundWin;}
-	public void SetRoundWin(){roundWin++;}
+	public void AddRoundWin(){roundWin++;}
 }

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class GameController : MonoBehaviour {
 
@@ -39,9 +40,11 @@ public class GameController : MonoBehaviour {
             //GetComponent<HUD>().Refresh();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
-			Pause();
-
+		if (Input.GetKeyDown (KeyCode.Escape)) {
+			if (canPause) {
+				GetComponent<HUD> ().DisplayPauseUI ();
+			}
+		}
 		if(gameOver)
         {
 			if (Input.GetKeyDown (KeyCode.R) || (Input.GetJoystickNames ().Length > 0 && Input.GetButtonDown("Submit"))) {
@@ -85,22 +88,27 @@ public class GameController : MonoBehaviour {
 		Application.Quit ();
 	}
 
+	public void RoundStart() {
+
+		GetComponent<HUD> ().HidingRoundWinner ();
+	}
     public void RoundEnd(GameObject deadPlayer)
     {
 		foreach (GameObject player in GameObject.FindGameObjectsWithTag ("Player")) {
 			if (player.GetComponent<PlayerStatus> ().GetID () != deadPlayer.GetComponent<PlayerStatus> ().GetID ()) {
-				player.GetComponent<PlayerStatus> ().SetRoundWin ();
+				player.GetComponent<PlayerStatus> ().AddRoundWin ();
 			}
 		
 		}
 		if( round < 3)
 		{
 			round++;
-			RoundOver ();
-			generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+			//RoundOver (deadPlayer);
+			GetComponent<HUD>().DisplayRoundWinner(deadPlayer, generator, round);
 		}
 		else if( !gameOver)
 		{
+			print ("gameover");
 			GameOver(deadPlayer);
 		}
 
@@ -121,19 +129,48 @@ public class GameController : MonoBehaviour {
         */
     }
 
-	private void RoundOver() {
-		
+	private void RoundOver(GameObject deadPlayer) {
+
+
+		int deadPlayerID = deadPlayer.GetComponent<PlayerStatus>().GetID();
+
+		Destroy (deadPlayer);
+
+		foreach (Transform child in canvas)
+		{
+			//Check if the child is part of the pause menu and if it is displayed or not
+			if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == false)
+			{
+				print ("Round Over");
+				child.gameObject.SetActive (true);
+				foreach (Transform children in child)
+				{
+					//Check if the child is part of the pause menu and if it is displayed or not
+					if (children.name.Contains(deadPlayerID.ToString()) && child.gameObject.activeInHierarchy == true)
+					{
+						
+						children.gameObject.SetActive (false);
+						canPause = false;
+						Time.timeScale = 0;
+
+						generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+						//StartCoroutine (Delay ());
+					}
+				}
+			}
+		}
+	}
+
+	IEnumerator Delay()
+	{		
+		yield return new WaitForSeconds(5);
+
+		generator.GetComponent<LevelGeneratorV3>().Refresh(round);
 	}
 
 	private void GameOver(GameObject deadPlayer)
     {
 		int deadPlayerID = deadPlayer.GetComponent<PlayerStatus>().GetID();
-        
-		/*if (roundWins < 0)
-            idPlayer = 2;
-        else
-            idPlayer = 1;
-		*/
 
 		foreach (Transform child in canvas)
         {
@@ -155,4 +192,5 @@ public class GameController : MonoBehaviour {
 		}
 		gameOver = true;
 	}
+	public void SetCanPause(bool value) { canPause = value; }
 }

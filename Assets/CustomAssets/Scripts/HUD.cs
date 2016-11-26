@@ -130,4 +130,79 @@ public class HUD : MonoBehaviour {
 			}
         }
     }
+
+	public void DisplayPauseUI ()
+	{
+
+			//Get all child in the canvas
+			foreach (Transform child in canvas) {
+
+				//Check if the child is part of the pause menu and if it is displayed or not
+				if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == false) {
+					child.gameObject.SetActive (true);
+					Time.timeScale = 0;
+				} else if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == true) {
+					child.gameObject.SetActive (false);
+					Time.timeScale = 1;
+				}
+			}
+	
+	}
+	public void DisplayRoundWinner(GameObject deadPlayer, GameObject generator, int round) {
+
+
+		int deadPlayerID = deadPlayer.GetComponent<PlayerStatus>().GetID();
+
+		Destroy (deadPlayer);
+
+		foreach (Transform child in canvas)
+		{
+			//Check if the child is part of the pause menu and if it is displayed or not
+			if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == false) {
+				child.gameObject.SetActive (true);
+				foreach (Transform children in child) {
+					//Check if the child is part of the pause menu and if it is displayed or not
+					if (children.name.Contains (deadPlayerID.ToString ()) && child.gameObject.activeInHierarchy == true) {
+
+						children.gameObject.SetActive (false);
+						GetComponent<GameController> ().SetCanPause (false);
+
+						StartCoroutine (Delay (generator, round));
+					}
+				}
+			} 
+			else if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == true)
+			{
+				child.gameObject.SetActive (false);
+			}
+		}
+	}
+	IEnumerator Delay(GameObject generator, int round)
+	{		
+
+		Time.timeScale = 0;
+
+		//Wait five second before continuing
+		float pauseEndTime = Time.realtimeSinceStartup + 5;
+
+		while (Time.realtimeSinceStartup < pauseEndTime)
+		{
+			yield return 0;
+		}
+
+		Time.timeScale = 1;
+		generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+	}
+
+	public void HidingRoundWinner() 
+	{
+		foreach (Transform child in canvas) 
+		{
+			//Check if the child is part of the pause menu and if it is displayed or not
+			if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == true) 
+			{
+				child.gameObject.SetActive (false);
+			}
+		}
+	}
 }
