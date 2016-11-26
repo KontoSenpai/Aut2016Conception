@@ -116,6 +116,25 @@ public class GameController : MonoBehaviour {
 		GetComponent<HUD> ().HidingRoundWinner ();
 		GetComponent<HUD> ().DisplayRoundBeginUI ();
 	}
+
+    public void PlaySound(string Nameobject,Vector3 position)
+    {
+        switch (Nameobject)
+        {
+            case "Pickup":
+                gameObject.GetComponent<SoundManager>().PlayPickupSound(position);
+                break;
+            case "Hurt":
+                break;
+            case "Die":
+                break;
+            case "Slam":
+                gameObject.GetComponent<SoundManager>().PlaySlamSound(position);
+                break;
+
+        }
+    }
+
     public void RoundEnd(GameObject deadPlayer)
     {
 		foreach (GameObject player in GameObject.FindGameObjectsWithTag ("Player")) {
@@ -235,4 +254,5 @@ public class GameController : MonoBehaviour {
 		gameOver = value;
 	}
 
+   
 }

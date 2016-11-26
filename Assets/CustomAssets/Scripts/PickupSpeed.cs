@@ -3,10 +3,6 @@ using System.Collections;
 
 public class PickupSpeed : MonoBehaviour
 {
-    //sound Variable
-    public AudioClip pickupSound;
-    private AudioSource source;
-    public float volumeRange = 1.0f;
 
     public float newMaxSpeed = 10.0f;
     public float activeTime =2;
@@ -20,7 +16,6 @@ public class PickupSpeed : MonoBehaviour
 
     void Start()
     {
-        source = gameObject.GetComponent<AudioSource>();
         GetComponentInParent<SpawnPickUp>().pickupIsActif = true;
         y0 = this.transform.position.y;
     }
@@ -33,8 +28,9 @@ public class PickupSpeed : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        //playSound one time
-        source.PlayOneShot(this.pickupSound, volumeRange);
+        //PlaySound 
+        GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
+        gameController.GetComponent<GameController>().PlaySound("Pickup", transform.position);
 
         if (other.transform.parent.tag=="Player")
             changeSpeed(other.transform.parent.gameObject);

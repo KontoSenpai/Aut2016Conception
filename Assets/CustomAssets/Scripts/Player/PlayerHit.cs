@@ -2,9 +2,6 @@
 using System.Collections;
 
 public class PlayerHit : MonoBehaviour {
-    //variable sound
-    public AudioClip hitSound;
-    public float volumeRange = 1f;
 
     /* COLLISIONS
     *
@@ -20,8 +17,6 @@ public class PlayerHit : MonoBehaviour {
             {
                 col.gameObject.GetComponentInParent<PlayerStatus>().Hurt();
 
-                //playsound
-                AudioSource.PlayClipAtPoint(hitSound, transform.position, volumeRange);
             }              
             gameObject.GetComponentInParent<PlayerController>().Jump(400f);
         }
