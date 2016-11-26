@@ -3,7 +3,12 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
-	private float maxSpeed = 5f;
+    //variable sound
+    public AudioClip slamSound;
+    public AudioClip jumpSound;
+    public float volumeRange = 1f;
+
+    private float maxSpeed = 5f;
     private float currentSpeed = 0f;
 	private float slamForce = 800f;
 	private float slamPrepForce = 100f;
@@ -41,7 +46,8 @@ public class PlayerController : MonoBehaviour {
         // HERE MAKE CODE FOR ALLOURDISSEMENT
 		if ((Input.GetButtonUp("Allourdissement_P"+ playerID) || (Input.GetKeyDown(KeyCode.H) && playerID == 1)) && Time.time > nextUsage)
         {
-			Slam();
+			Slam();        
+
         }
 
         print(rb.velocity);
@@ -91,6 +97,7 @@ public class PlayerController : MonoBehaviour {
         tmp.y = 0.0f;
         rb.velocity = tmp;
         rb.AddForce(Vector2.up * force);
+        AudioSource.PlayClipAtPoint(jumpSound, transform.position, volumeRange);
     }
 
 	public void Slam()
@@ -106,7 +113,9 @@ public class PlayerController : MonoBehaviour {
 		tmp.z = 0.0f;
 		rb.velocity = tmp;
 		rb.AddForce(Vector2.up * slamPrepForce);
-		StartCoroutine (Delay ());
+        //playsound
+        AudioSource.PlayClipAtPoint(slamSound, transform.position, volumeRange);
+        StartCoroutine (Delay ());
 	}
 
 	IEnumerator Delay()

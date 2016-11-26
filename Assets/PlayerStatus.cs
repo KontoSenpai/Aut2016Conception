@@ -3,7 +3,12 @@ using System.Collections;
 
 public class PlayerStatus : MonoBehaviour {
 
-	public int maxLife;
+    //variable sound
+    public AudioClip hurtSound;
+    public AudioClip dieSound;
+    public float volumeRange = 1f;
+
+    public int maxLife;
     public float invulnerabilityTime = 1.5f;
 
     public bool invulnerablePickup = false;
@@ -42,6 +47,7 @@ public class PlayerStatus : MonoBehaviour {
         }
         if( currentLife == 0)
         {
+            AudioSource.PlayClipAtPoint(dieSound, transform.position, volumeRange);
 			GameObject gameController = GameObject.FindGameObjectWithTag ("GameController");
 			if (gameController != null)
                 gameController.GetComponent<GameController>().RoundEnd(gameObject);
@@ -61,6 +67,9 @@ public class PlayerStatus : MonoBehaviour {
                 //Update player HUD
                 GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
 				gameController.GetComponent<HUD>().UpdateHearts(gameObject);
+
+                //PlaySound 
+                AudioSource.PlayClipAtPoint(hurtSound, transform.position, volumeRange);
             }
 		}
     }

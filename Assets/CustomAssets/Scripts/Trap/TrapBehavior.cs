@@ -3,6 +3,11 @@ using System.Collections;
 
 public class TrapBehavior : MonoBehaviour
 {
+
+    //variable sound
+    public AudioClip trapSound;
+    public float volumeRange = 1f;
+
     private Rigidbody2D rb;
     private SpriteRenderer rd;
     private BoxCollider2D box;
@@ -17,6 +22,7 @@ public class TrapBehavior : MonoBehaviour
 
     void Start()
     {
+
         if (gameObject.transform.parent.name.Contains("Dynamic"))
         {
             rb = GetComponent<Rigidbody2D>();
@@ -89,7 +95,8 @@ public class TrapBehavior : MonoBehaviour
             if (col.transform.parent.tag.Equals("Player") && col.gameObject.GetComponentInParent<PlayerStatus>().IsVulnerable() && !markedForDeath)
             {
                 col.GetComponentInParent<PlayerStatus>().Hurt();
-                GetComponentInParent<DynamicTrapSpawner>().SetDeathTimer(Time.time);
+                GetComponentInParent<DynamicTrapSpawner>().SetDeathTimer(Time.time);           
+
                 Destroy(gameObject.transform.parent.gameObject);
             }
             else if (col.name.Contains("Half") || col.name.Contains("Full"))
@@ -123,7 +130,11 @@ public class TrapBehavior : MonoBehaviour
         else
         {
             if (col.transform.parent.tag.Equals("Player") && col.GetComponentInParent<PlayerStatus>().IsVulnerable())
+            {
                 col.GetComponentInParent<PlayerStatus>().Hurt();
+             
+            }
+
         }
     }
 }

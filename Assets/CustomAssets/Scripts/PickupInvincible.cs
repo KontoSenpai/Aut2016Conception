@@ -3,11 +3,13 @@ using System.Collections;
 
 public class PickupInvincible : MonoBehaviour {
 
-    // public AudioClip pickupSound;
-    // private AudioSource source;
+    //variable sound
+    public AudioClip pickupSound;
+    private AudioSource source;
+    public float volumeRange = 1f;
 
     public float activeTime = 2;
-    //public float volumeRange = 1f;
+    
 
     //use for floating the pickup
     private float y0;
@@ -15,7 +17,7 @@ public class PickupInvincible : MonoBehaviour {
     public float timeAnimation = 2f;
     void Start()
     {
-        //source = gameObject.GetComponent<AudioSource>();
+        source = gameObject.GetComponent<AudioSource>();
         GetComponentInParent<SpawnPickUp>().pickupIsActif = true;
         y0 = this.transform.position.y;
     }
@@ -30,10 +32,15 @@ public class PickupInvincible : MonoBehaviour {
     {
         if (other.transform.parent.tag == "Player")
         {
+            //PlaySound 
+            source.PlayOneShot(this.pickupSound, volumeRange);
+
             SetInvincible(other.transform.parent.gameObject);
             StartCoroutine(wait(other.transform.parent.gameObject));
+
             // bool for the spawner of pickup
             GetComponentInParent<SpawnPickUp>().pickupIsActif = false;
+
             //put the pickup to invisible 
             GetComponent<BoxCollider2D>().enabled = false;
             GetComponent<Renderer>().enabled = false;
