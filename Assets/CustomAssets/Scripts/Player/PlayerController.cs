@@ -35,22 +35,15 @@ public class PlayerController : MonoBehaviour {
     {
         float move = 0.0f;
 
-		if (canMove) {
-			if (Input.GetJoystickNames ().Length > 0) {
-				move = Input.GetAxis ("Horizontal_P" + playerID);
-			} else { 
-				move = Input.GetAxis ("Horizontal_C" + playerID);
-			}
-		}
-
-        // HERE MAKE CODE FOR ALLOURDISSEMENT
-		if ((Input.GetButtonUp("Allourdissement_P"+ playerID) || (Input.GetKeyDown(KeyCode.H) && playerID == 1)) && Time.time > nextUsage)
+		if (canMove)
         {
-			Slam();        
-
-        }
-
-        print(rb.velocity);
+			if (Input.GetJoystickNames ().Length > 0)
+				move = Input.GetAxis ("Horizontal_P" + playerID);
+			else
+				move = Input.GetAxis ("Horizontal_C" + playerID);
+		}
+		if ((Input.GetButtonUp("Allourdissement_P"+ playerID) || (Input.GetKeyDown(KeyCode.H) && playerID == 1)) && Time.time > nextUsage)
+            Slam();        
         if( rb.velocity.y > 10)
         {
             Vector2 v = rb.velocity;

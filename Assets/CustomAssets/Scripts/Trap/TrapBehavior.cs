@@ -3,7 +3,6 @@ using System.Collections;
 
 public class TrapBehavior : MonoBehaviour
 {
-
     //variable sound
     public AudioClip trapSound;
     public float volumeRange = 1f;

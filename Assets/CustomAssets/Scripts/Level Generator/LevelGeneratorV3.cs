@@ -46,6 +46,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
         Destroy(trapsParent);
         Destroy(pickupsParent);
         CreateContent(round);
+        players.Clear();
     }
 
     /** Function called each round to generate a new layout
@@ -79,7 +80,8 @@ public class LevelGeneratorV3 : MonoBehaviour {
         PlayerStarts();
 
 		GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
-		if (gameController != null) {
+		if (gameController != null)
+        {
 			gameController.GetComponent<HUD>().ResetTimer();
 			gameController.GetComponent<GameController> ().RoundStart ();
 		}
