@@ -66,11 +66,11 @@ public class GameController : MonoBehaviour {
 
             if (playersArray[0].GetComponent<PlayerStatus>().currentLife > playersArray[1].GetComponent<PlayerStatus>().currentLife)
             {
-                RoundEnd(players[1]);
+                RoundEnd(playersArray[1]);
             }
             else if (playersArray[0].GetComponent<PlayerStatus>().currentLife < playersArray[1].GetComponent<PlayerStatus>().currentLife)
             {
-                RoundEnd(players[0]);
+                RoundEnd(playersArray[0]);
             }
             else
                 // RAJOUTER EGALITÉ
