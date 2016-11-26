@@ -3,11 +3,11 @@ using System.Collections;
 
 public class SpawnPlayer : MonoBehaviour
 {
-    public GameObject playerObject;
+
     private int playerIndex;
 
 
-    public GameObject Spawn(int index)
+    public GameObject Spawn(GameObject playerObject, int index)
     {
         transform.name = "SpawnPlayer " + index;
         GameObject player = Instantiate(playerObject, transform.position, transform.rotation) as GameObject;

@@ -6,6 +6,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
 
     public bool generateBlocks; // Know if blocks must be created or not
     public GameObject playerSpawn; // Prefab handling player generation
+    public GameObject[] playerObjects; // Prefab of players
     public GameObject pickupSpawn; // Prefab handling pickup generation
     public int nbPlayer = 2; // Number of players
     public int nbPickup = 2; // Number of PickUp
@@ -237,7 +238,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
                 {
                     GameObject spawn = Instantiate(playerSpawn, new Vector3(IntParseFast(splittedString[0]) + .5f, IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
                     spawn.transform.parent = spawnsParent.transform;
-                    players.Add(spawn.GetComponent<SpawnPlayer>().Spawn(player + 1));
+                    players.Add(spawn.GetComponent<SpawnPlayer>().Spawn(playerObjects[player],player + 1));
                     gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] = 4;
                 }
             }
@@ -248,7 +249,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
             {
                 GameObject spawn = Instantiate(playerSpawn, new Vector3(player * 10 + 0.5f, player*10 + 0.5f, 0), transform.rotation) as GameObject;
                 spawn.transform.parent = spawnsParent.transform;
-				spawn.GetComponent<SpawnPlayer>().Spawn(player + 1);
+				spawn.GetComponent<SpawnPlayer>().Spawn(playerObjects[player],player + 1);
             }
         }
     }

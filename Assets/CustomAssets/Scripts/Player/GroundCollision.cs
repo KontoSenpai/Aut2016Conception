@@ -48,12 +48,10 @@ public class GroundCollision : MonoBehaviour {
             }
 			timeCollisions.Add (Time.time);
 		}
-		if (col.gameObject.tag.Equals("Sliders"))
+		if (col.gameObject.tag.Equals("Sliders") && gameObject.GetComponentInParent<PlayerController>().GetMove() != 0)
         {
-            print(col.gameObject.name);
             if ( col.gameObject.transform.parent.name.Contains("Half"))
             {
-                print(col.gameObject.name);
                 if (gameObject.transform.position.y < col.gameObject.transform.position.y + 0.4f)
                     slide.Add(col.gameObject);
                 else
@@ -61,7 +59,6 @@ public class GroundCollision : MonoBehaviour {
             }
             else if( col.gameObject.transform.parent.name.Contains("Full"))
             {
-                print(col.gameObject.name);
                 if (gameObject.transform.position.y < col.gameObject.transform.position.y + 0.9f)
                     slide.Add(col.gameObject);
                 else

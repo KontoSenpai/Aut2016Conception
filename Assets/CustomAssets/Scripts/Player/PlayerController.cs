@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour {
 	private float slamCD = 1.0f;
 	private float nextUsage;
 
+    private float move;
+
     Animator animator;
 
     void Start () 
@@ -33,10 +35,13 @@ public class PlayerController : MonoBehaviour {
 
     void Update()
     {
-        float move = 0.0f;
-
 		if (canMove)
         {
+            if( playerID == 1)
+            {
+                print(move);
+            }
+
 			if (Input.GetJoystickNames ().Length > 0)
 				move = Input.GetAxis ("Horizontal_P" + playerID);
 			else
@@ -70,7 +75,9 @@ public class PlayerController : MonoBehaviour {
             currentSpeed = Mathf.Lerp(currentSpeed, maxSpeed, 0.3f);
     }
 
-	//Flip the character
+	/** Function that flip the character sprite if the direction is changed
+    *
+    */
 	private void Flip() 
 	{
 		facingRight = !facingRight;
@@ -79,11 +86,18 @@ public class PlayerController : MonoBehaviour {
 		transform.localScale = theScale;
 	}
 
+    /** Function that is called in the ground collision
+    * @Param param : name of the animation
+    * @Param value : value of the animation
+    */
     public void SetAnimation(string param, bool value)
     {
         animator.SetBool(param, value);
     }
 
+    /** Function that add the force required to jump
+    * @Param force : Value of the Y force to be used
+    */
     public void Jump( float force)
     {
         Vector3 tmp = rb.velocity;
@@ -123,4 +137,5 @@ public class PlayerController : MonoBehaviour {
 
 	public void SetCanMove(bool value) { canMove = value; }
 	public bool GetCanMove() { return canMove; }
+    public float GetMove() { return move; }
 }
