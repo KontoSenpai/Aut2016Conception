@@ -3,16 +3,6 @@ using System.Collections;
 
 public class PlayerHit : MonoBehaviour {
 
-	void Start ()
-    {
-	
-	}
-	
-	void Update ()
-    {
-	
-	}
-
     /* COLLISIONS
     *
     */

@@ -5,23 +5,42 @@ public class PlayerStatus : MonoBehaviour {
 
 	public int maxLife;
     public float invulnerabilityTime = 1.5f;
-    private float invulnerabilityStart;
-    private bool vulnerable = true;
+
     public bool invulnerablePickup = false;
     public int currentLife;
 	private int playerID;
 	private int roundWin = 0;
+    //Variables used to handle player damage behavior
+    private bool vulnerable = true;
+    private bool blink = false;
+    public GameObject headCollider;
+    //Variables linked to sprite rendering
+    private SpriteRenderer rd;
+    private float lastDisplay;
+    private float displayDelay = 0.1f;
 
-	// Use this for initialization
-	void Awake ()
+    // Use this for initialization
+    void Awake ()
     {
 		currentLife = maxLife;
+        rd = GetComponentInChildren<SpriteRenderer>();
 	}
 
     void Update()
     {
-        if (Time.time - invulnerabilityStart >= invulnerabilityTime && !vulnerable && !invulnerablePickup)
-            vulnerable = true;
+        if( blink)
+        {
+            if (rd.enabled && Time.time - lastDisplay >= displayDelay)
+            {
+                rd.enabled = false;
+                lastDisplay = Time.time;
+            }
+            else if (!rd.enabled && Time.time - lastDisplay >= displayDelay)
+            {
+                rd.enabled = true;
+                lastDisplay = Time.time;
+            }
+        }
         if( currentLife == 0)
         {
 			GameObject gameController = GameObject.FindGameObjectWithTag ("GameController");
@@ -29,6 +48,7 @@ public class PlayerStatus : MonoBehaviour {
                 gameController.GetComponent<GameController>().RoundEnd(gameObject);
         }
     }
+
     public void Hurt()
     {
 		if (gameObject != null)
@@ -37,13 +57,25 @@ public class PlayerStatus : MonoBehaviour {
             {
 				currentLife--;
 				vulnerable = false;
-				invulnerabilityStart = Time.time;
+                blink = true;
+                headCollider.SetActive(false);
+                StartCoroutine(WaitForBlink(invulnerabilityTime));
                 //Update player HUD
                 GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
 				gameController.GetComponent<HUD>().UpdateHearts(gameObject);
             }
 		}
     }
+
+    private IEnumerator WaitForBlink(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        blink = false;
+        vulnerable = true;
+        rd.enabled = true;
+        headCollider.SetActive(true);
+    }
+
 
     public bool IsVulnerable(){return vulnerable;}
     public void SetVulnerability(bool isVulnerable) {vulnerable = isVulnerable; }
