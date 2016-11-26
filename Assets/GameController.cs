@@ -127,10 +127,32 @@ public class GameController : MonoBehaviour {
             case "Hurt":
                 gameObject.GetComponent<SoundManager>().PlayHurtSound(position);
                 break;
-            case "Die":
-                break;
             case "Slam":
                 gameObject.GetComponent<SoundManager>().PlaySlamSound(position);
+                break;
+            case "Start":
+                gameObject.GetComponent<SoundManager>().PlayStartSound(position);
+                break;
+            case "MoveMenus":
+                gameObject.GetComponent<SoundManager>().PlaymMovingMenusSound(position);
+                break;
+            case "SelectMenus":
+                gameObject.GetComponent<SoundManager>().PlaySelectMenusSound(position);
+                break;
+            case "Ready":
+                gameObject.GetComponent<SoundManager>().PlayReadySound(position);
+                break;
+            case "Fight":
+                gameObject.GetComponent<SoundManager>().PlayFightSound(position);
+                break;
+            case "Quit":
+                gameObject.GetComponent<SoundManager>().PlayQuitGameSound(position);
+                break;
+            case "WinRound":
+                gameObject.GetComponent<SoundManager>().PlayWinRoundSound(position);
+                break;
+            case "WinGame":
+                gameObject.GetComponent<SoundManager>().PlayWinGameSound(position);
                 break;
 
         }
