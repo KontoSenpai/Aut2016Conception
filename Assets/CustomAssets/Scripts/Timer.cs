@@ -8,7 +8,9 @@ public class Timer : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-	}
+        GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
+        gameController.GetComponent<GameController>().SetTimerOut(false);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -17,8 +19,9 @@ public class Timer : MonoBehaviour {
 
 		if (timer <= 0)
         {
-            //do some shit for ending/ continue game
-			timer = 0;
+            GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
+            gameController.GetComponent<GameController>().SetTimerOut(true);
+            timer = 0;
         }
 
 		int minute = (int) timer / 60;

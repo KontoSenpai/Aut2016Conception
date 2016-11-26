@@ -13,6 +13,8 @@ public class GameController : MonoBehaviour {
     
 	private bool gameOver = false;
 	private bool canPause = true;
+    private bool timerOut = false;
+
 
     void Start()
     {
@@ -21,6 +23,7 @@ public class GameController : MonoBehaviour {
         generator.name = "Generator";
         generator.GetComponent<LevelGeneratorV3>().Refresh(round);
         players = generator.GetComponent<LevelGeneratorV3>().GetPlayers();
+        
         //GetComponent<HUD>().Refresh();
     }
 
@@ -55,6 +58,26 @@ public class GameController : MonoBehaviour {
 				Quit ();
 			}
 		}
+
+        if(timerOut)
+        {
+            GameObject[] playersArray = GameObject.FindGameObjectsWithTag("Player");
+
+
+            if (playersArray[0].GetComponent<PlayerStatus>().currentLife > playersArray[1].GetComponent<PlayerStatus>().currentLife)
+            {
+                RoundEnd(players[1]);
+            }
+            else if (playersArray[0].GetComponent<PlayerStatus>().currentLife < playersArray[1].GetComponent<PlayerStatus>().currentLife)
+            {
+                RoundEnd(players[0]);
+            }
+            else
+                // RAJOUTER EGALITÉ
+
+
+            timerOut = false;
+        }
 	}
 	public void Pause ()
     {
@@ -121,6 +144,7 @@ public class GameController : MonoBehaviour {
         {
             round++;
             generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+            players = generator.GetComponent<LevelGeneratorV3>().GetPlayers();
         }
         else if( !gameOver)
         {
@@ -193,4 +217,17 @@ public class GameController : MonoBehaviour {
 		gameOver = true;
 	}
 	public void SetCanPause(bool value) { canPause = value; }
+
+    // GETTER
+    public bool GetTimerOut()
+    {
+        return timerOut;
+    }
+
+    //SETTER
+    public void SetTimerOut(bool timer)
+    {
+        timerOut = timer;
+    }
+
 }
