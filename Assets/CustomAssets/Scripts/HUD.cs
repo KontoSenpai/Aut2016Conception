@@ -281,7 +281,6 @@ public class HUD : MonoBehaviour {
 
 		foreach (Transform child in canvas)
 		{
-			print ("display fight image");
 			//Check if the child is part of the pause menu and if it is displayed or not
 			if (child.CompareTag ("RoundBeginUI") && child.gameObject.activeInHierarchy == true) {
 				child.gameObject.SetActive (true);
@@ -311,6 +310,7 @@ public class HUD : MonoBehaviour {
 		}
 		readyImage.gameObject.SetActive (true);
 		roundBeginUI.gameObject.SetActive (false);
+		GetComponent<GameController> ().SetCanPause (true);
 		Time.timeScale = 1;
 	}
 
