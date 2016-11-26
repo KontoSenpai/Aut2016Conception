@@ -62,8 +62,6 @@ public class GameController : MonoBehaviour {
         if(timerOut)
         {
             GameObject[] playersArray = GameObject.FindGameObjectsWithTag("Player");
-
-
             if (playersArray[0].GetComponent<PlayerStatus>().currentLife > playersArray[1].GetComponent<PlayerStatus>().currentLife)
             {
                 RoundEnd(playersArray[1]);
