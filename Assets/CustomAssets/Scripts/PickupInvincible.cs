@@ -4,9 +4,6 @@ using System.Collections;
 public class PickupInvincible : MonoBehaviour {
 
     //variable sound
-    public AudioClip pickupSound;
-    private AudioSource source;
-    public float volumeRange = 1f;
 
     public float activeTime = 2;
     
@@ -17,7 +14,6 @@ public class PickupInvincible : MonoBehaviour {
     public float timeAnimation = 2f;
     void Start()
     {
-        source = gameObject.GetComponent<AudioSource>();
         GetComponentInParent<SpawnPickUp>().pickupIsActif = true;
         y0 = this.transform.position.y;
     }
@@ -33,7 +29,8 @@ public class PickupInvincible : MonoBehaviour {
         if (other.transform.parent.tag == "Player")
         {
             //PlaySound 
-            source.PlayOneShot(this.pickupSound, volumeRange);
+            GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
+            gameController.GetComponent<GameController>().PlaySound("Pickup",transform.position);
 
             SetInvincible(other.transform.parent.gameObject);
             StartCoroutine(wait(other.transform.parent.gameObject));
@@ -62,7 +59,4 @@ public class PickupInvincible : MonoBehaviour {
 
         Destroy(gameObject);
     }
-
-
-
 }
