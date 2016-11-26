@@ -148,9 +148,8 @@ public class HUD : MonoBehaviour {
 			}
 	
 	}
-	public void DisplayRoundWinner(GameObject deadPlayer, GameObject generator, int round) {
-
-
+	public void DisplayRoundWinner(GameObject deadPlayer, GameObject generator, int round)
+    {
 		int deadPlayerID = deadPlayer.GetComponent<PlayerStatus>().GetID();
 
 		Destroy (deadPlayer);
@@ -158,20 +157,23 @@ public class HUD : MonoBehaviour {
 		foreach (Transform child in canvas)
 		{
 			//Check if the child is part of the pause menu and if it is displayed or not
-			if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == false) {
+			if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == false)
+            {
 				child.gameObject.SetActive (true);
-				foreach (Transform children in child) {
+				foreach (Transform children in child)
+                {
 					//Check if the child is part of the pause menu and if it is displayed or not
-					if (children.name.Contains (deadPlayerID.ToString ()) && child.gameObject.activeInHierarchy == true) {
+					if (children.name.Contains (deadPlayerID.ToString ()) && child.gameObject.activeInHierarchy == true)
+                    {
 						children.gameObject.SetActive (false);
 						GetComponent<GameController> ().SetCanPause (false);
-
 						StartCoroutine (Delay (generator, round));
 					}
 				}
 			}
 		}
 	}
+
 	IEnumerator Delay(GameObject generator, int round)
 	{		
 
