@@ -13,8 +13,7 @@ public class GroundCollision : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // TO REMOVE IF YOU WANT BOTH PLAYERS TO MOVE
-        if (JumpOccurs() && gameObject.GetComponentInParent<PlayerStatus>().GetID() == 1)
+        if (JumpOccurs())
         {
             timeCollisions.Clear();
             GetComponentInParent<PlayerController>().Jump(jumpForce);
