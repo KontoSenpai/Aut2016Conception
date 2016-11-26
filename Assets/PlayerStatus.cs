@@ -69,7 +69,7 @@ public class PlayerStatus : MonoBehaviour {
 				gameController.GetComponent<HUD>().UpdateHearts(gameObject);
 
                 //PlaySound 
-                AudioSource.PlayClipAtPoint(hurtSound, transform.position, volumeRange);
+                gameController.GetComponent<GameController>().PlaySound("Hurt", transform.position);
             }
 		}
     }
