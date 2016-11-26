@@ -5,7 +5,6 @@ public class SoundManager : MonoBehaviour {
 
     //variable sound
     public AudioClip hurtSound;
-    public AudioClip dieSound;
     public AudioClip pickupSound;
     public AudioClip slamSound;
     public float volumeRange = 1f;
@@ -30,10 +29,7 @@ public class SoundManager : MonoBehaviour {
     {
         AudioSource.PlayClipAtPoint(hurtSound, position, volumeRange);
     }
-    public void PlayDieSound(Vector3 position)
-    {
-        AudioSource.PlayClipAtPoint(dieSound, position, volumeRange);
-    }
+
     public void PlaySlamSound(Vector3 position)
     {
         AudioSource.PlayClipAtPoint(slamSound, position, volumeRange);

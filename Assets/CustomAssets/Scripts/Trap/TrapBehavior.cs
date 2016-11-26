@@ -3,10 +3,6 @@ using System.Collections;
 
 public class TrapBehavior : MonoBehaviour
 {
-    //variable sound
-    public AudioClip trapSound;
-    public float volumeRange = 1f;
-
     private Rigidbody2D rb;
     private SpriteRenderer rd;
     private BoxCollider2D box;

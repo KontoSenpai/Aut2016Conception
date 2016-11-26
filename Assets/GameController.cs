@@ -125,6 +125,7 @@ public class GameController : MonoBehaviour {
                 gameObject.GetComponent<SoundManager>().PlayPickupSound(position);
                 break;
             case "Hurt":
+                gameObject.GetComponent<SoundManager>().PlayHurtSound(position);
                 break;
             case "Die":
                 break;
