@@ -131,8 +131,8 @@ public class GameController : MonoBehaviour {
 		}
 		else if( !gameOver)
 		{
-			print ("gameover");
-			GameOver(deadPlayer);
+			GetComponent<HUD>().DisplayGameOver(deadPlayer);
+			//GameOver(deadPlayer);
 		}
 
 		/*
@@ -229,5 +229,9 @@ public class GameController : MonoBehaviour {
     {
         timerOut = timer;
     }
+
+	public void SetGameOver (bool value) {
+		gameOver = value;
+	}
 
 }

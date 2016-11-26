@@ -163,17 +163,12 @@ public class HUD : MonoBehaviour {
 				foreach (Transform children in child) {
 					//Check if the child is part of the pause menu and if it is displayed or not
 					if (children.name.Contains (deadPlayerID.ToString ()) && child.gameObject.activeInHierarchy == true) {
-
 						children.gameObject.SetActive (false);
 						GetComponent<GameController> ().SetCanPause (false);
 
 						StartCoroutine (Delay (generator, round));
 					}
 				}
-			} 
-			else if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == true)
-			{
-				child.gameObject.SetActive (false);
 			}
 		}
 	}
@@ -183,7 +178,7 @@ public class HUD : MonoBehaviour {
 		Time.timeScale = 0;
 
 		//Wait five second before continuing
-		float pauseEndTime = Time.realtimeSinceStartup + 5;
+		float pauseEndTime = Time.realtimeSinceStartup + 2;
 
 		while (Time.realtimeSinceStartup < pauseEndTime)
 		{
@@ -201,7 +196,41 @@ public class HUD : MonoBehaviour {
 			//Check if the child is part of the pause menu and if it is displayed or not
 			if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == true) 
 			{
+				
 				child.gameObject.SetActive (false);
+			}
+			foreach (Transform children in child) {
+				//Check if the child is part of the pause menu and if it is displayed or not
+				if (children.gameObject.activeInHierarchy == false) { //&& child.gameObject.activeInHierarchy == true) {
+					children.gameObject.SetActive (true);
+
+				}
+			}
+		}
+	}
+
+	public void DisplayGameOver(GameObject deadPlayer)
+	{
+		int deadPlayerID = deadPlayer.GetComponent<PlayerStatus>().GetID();
+
+		foreach (Transform child in canvas)
+		{
+			//Check if the child is part of the pause menu and if it is displayed or not
+			if (child.CompareTag ("VictoryUI") && child.gameObject.activeInHierarchy == false)
+			{
+				child.gameObject.SetActive (true);
+				foreach (Transform children in child)
+				{
+					//Check if the child is part of the pause menu and if it is displayed or not
+					if (children.name.Contains(deadPlayerID.ToString()) && child.gameObject.activeInHierarchy == true)
+					{
+						children.gameObject.SetActive (false);
+						GetComponent<GameController> ().SetCanPause (false);
+						Time.timeScale = 0;
+
+						GetComponent<GameController> ().SetGameOver (true);
+					}
+				}
 			}
 		}
 	}
