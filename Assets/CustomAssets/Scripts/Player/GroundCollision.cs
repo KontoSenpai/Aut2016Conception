@@ -19,7 +19,7 @@ public class GroundCollision : MonoBehaviour {
             GetComponentInParent<PlayerController>().Jump(jumpForce);
             GetComponentInParent<PlayerController>().SetAnimation("Ground", false);
         }
-        if (slide.Count > 0)
+        else if (slide.Count > 0)
             GetComponentInParent<PlayerController>().Jump(slideForce);
     }
 
@@ -39,7 +39,7 @@ public class GroundCollision : MonoBehaviour {
     void OnCollisionEnter2D(Collision2D col)
 	{
         GetComponentInParent<PlayerController>().SetCanMove(true);
-        if (col.gameObject.tag == "Ground" && gameObject.transform.position.y > col.gameObject.transform.position.y)
+        if (col.gameObject.tag.Equals("Ground") && gameObject.transform.position.y > col.gameObject.transform.position.y)
 		{
 			if (timeCollisions.Count == 0)
             {
@@ -48,10 +48,27 @@ public class GroundCollision : MonoBehaviour {
             }
 			timeCollisions.Add (Time.time);
 		}
-		if (col.gameObject.tag == "Sliders")
-		{
-			slide.Add (col.gameObject);
-		}
+		if (col.gameObject.tag.Equals("Sliders"))
+        {
+            print(col.gameObject.name);
+            if ( col.gameObject.transform.parent.name.Contains("Half"))
+            {
+                print(col.gameObject.name);
+                if (gameObject.transform.position.y < col.gameObject.transform.position.y + 0.4f)
+                    slide.Add(col.gameObject);
+                else
+                    timeCollisions.Add(Time.time);
+            }
+            else if( col.gameObject.transform.parent.name.Contains("Full"))
+            {
+                print(col.gameObject.name);
+                if (gameObject.transform.position.y < col.gameObject.transform.position.y + 0.9f)
+                    slide.Add(col.gameObject);
+                else
+                    timeCollisions.Add(Time.time);
+            }
+        }
+
 	}
 
     void OnCollisionExit2D(Collision2D col)
