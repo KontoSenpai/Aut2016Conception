@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour {
 			else
 				move = Input.GetAxis ("Horizontal_C" + playerID);
 		}
-		if ((Input.GetButtonUp("Allourdissement_P"+ playerID) || (Input.GetKeyDown(KeyCode.H) && playerID == 1)) && Time.time > nextUsage)
+		if ((Input.GetButton("Allourdissement_P"+ playerID) || (Input.GetKeyDown(KeyCode.H) && playerID == 1)) && Time.time > nextUsage)
             Slam();        
         if( rb.velocity.y > 10)
         {
