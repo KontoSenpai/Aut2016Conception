@@ -19,7 +19,10 @@ public class SoundManager : MonoBehaviour {
     public AudioClip winRoundSound;
     public AudioClip winGameSound;
 
+    public AudioClip backgroundSound;
+
     public float volumeRange = 1f;
+    public float volumeRangeMusic = 1f;
 
     // Use this for initialization
     void Start () {
@@ -80,12 +83,17 @@ public class SoundManager : MonoBehaviour {
     //WIN SOUND
     public void PlayWinRoundSound(Vector3 position)
     {
-        AudioSource.PlayClipAtPoint(winRoundSound, position, volumeRange);
+        AudioSource.PlayClipAtPoint(winRoundSound, position, volumeRangeMusic);
     }
 
     public void PlayWinGameSound(Vector3 position)
     {
-        AudioSource.PlayClipAtPoint(winGameSound, position, volumeRange);
+        AudioSource.PlayClipAtPoint(winGameSound, position, volumeRangeMusic);
+    }
+
+    public void PlayBackgroundSound(Vector3 position)
+    {
+        AudioSource.PlayClipAtPoint(backgroundSound, position, volumeRange);
     }
 
 }

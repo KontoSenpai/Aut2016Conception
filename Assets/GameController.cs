@@ -8,8 +8,6 @@ public class GameController : MonoBehaviour {
     public Transform canvas;
 
     private int round = 1;
-	private List<GameObject> players;
-    int roundWins = 0; // methode sale pour définir le vainqueur : si >0 joueur 2, sinon joueur 1
     
 	private bool gameOver = false;
 	private bool canPause = true;
@@ -18,29 +16,19 @@ public class GameController : MonoBehaviour {
 
     void Start()
     {
-        players = new List<GameObject>();
         generator = Instantiate(generator, new Vector3(0, 0, 0), transform.rotation) as GameObject;
         generator.name = "Generator";
         generator.GetComponent<LevelGeneratorV3>().Refresh(round);
-        players = generator.GetComponent<LevelGeneratorV3>().GetPlayers();
-        
-        //GetComponent<HUD>().Refresh();
     }
 
 	void Update ()
     {
         if (Input.GetKeyDown("space"))
-        {
             generator.GetComponent<LevelGeneratorV3>().Refresh(round);
-            players = generator.GetComponent<LevelGeneratorV3>().GetPlayers();
-            //GetComponent<HUD>().Refresh();
-        }
         if (Input.GetKeyDown("g") && round < 3)
         {
             round++;
             generator.GetComponent<LevelGeneratorV3>().Refresh(round);
-            players = generator.GetComponent<LevelGeneratorV3>().GetPlayers();
-            //GetComponent<HUD>().Refresh();
         }
 
 		if (Input.GetKeyDown (KeyCode.Escape)) {
@@ -100,8 +88,9 @@ public class GameController : MonoBehaviour {
         Pause ();
 	}
 
-	public void Restart() {
-		Application.LoadLevel (Application.loadedLevel);
+	public void Restart()
+    {
+		Application.LoadLevel(Application.loadedLevel);
 	}
 
 	public void Quit()
@@ -115,7 +104,79 @@ public class GameController : MonoBehaviour {
 		GetComponent<HUD> ().DisplayRoundBeginUI ();
 	}
 
-    public void PlaySound(string Nameobject,Vector3 position)
+   
+    public void RoundEnd(GameObject deadPlayer)
+    {
+		foreach (GameObject player in GameObject.FindGameObjectsWithTag ("Player")) {
+			if (player.GetComponent<PlayerStatus> ().GetID () != deadPlayer.GetComponent<PlayerStatus> ().GetID ()) {
+				player.GetComponent<PlayerStatus> ().AddRoundWin ();
+			}
+		
+		}
+		if( round < 3)
+		{
+			round++;
+			//RoundOver (deadPlayer);
+			GetComponent<HUD>().DisplayRoundWinner(deadPlayer, generator, round);
+            PlaySound("WinRound", new Vector3 (0.0f,0.0f,0.0f) );
+        }
+		else if( !gameOver)
+		{
+			GetComponent<HUD>().DisplayGameOver(deadPlayer);
+            PlaySound("WinGame", new Vector3(0.0f, 0.0f, 0.0f));
+            //GameOver(deadPlayer);
+        }
+
+		/*
+        if( deadPlayer.GetComponent<PlayerStatus>().GetID() == 1)
+            roundWins += 1;
+        else
+            roundWins -= 1;
+        if( round < 3)
+        {
+            round++;
+            generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+            players = generator.GetComponent<LevelGeneratorV3>().GetPlayers();
+        }
+        else if( !gameOver)
+        {
+            GameOver();
+        }
+        */
+    }
+
+	private void RoundOver(GameObject deadPlayer)
+    {
+		int deadPlayerID = deadPlayer.GetComponent<PlayerStatus>().GetID();
+
+		Destroy (deadPlayer);
+
+		foreach (Transform child in canvas)
+		{
+			//Check if the child is part of the pause menu and if it is displayed or not
+			if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == false)
+			{
+				print ("Round Over");
+				child.gameObject.SetActive (true);
+				foreach (Transform children in child)
+				{
+					//Check if the child is part of the pause menu and if it is displayed or not
+					if (children.name.Contains(deadPlayerID.ToString()) && child.gameObject.activeInHierarchy == true)
+					{
+						
+						children.gameObject.SetActive (false);
+						canPause = false;
+						Time.timeScale = 0;
+
+						generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+						//StartCoroutine (Delay ());
+					}
+				}
+			}
+		}
+	}
+
+    public void PlaySound(string Nameobject, Vector3 position)
     {
         switch (Nameobject)
         {
@@ -156,77 +217,7 @@ public class GameController : MonoBehaviour {
         }
     }
 
-    public void RoundEnd(GameObject deadPlayer)
-    {
-		foreach (GameObject player in GameObject.FindGameObjectsWithTag ("Player")) {
-			if (player.GetComponent<PlayerStatus> ().GetID () != deadPlayer.GetComponent<PlayerStatus> ().GetID ()) {
-				player.GetComponent<PlayerStatus> ().AddRoundWin ();
-			}
-		
-		}
-		if( round < 3)
-		{
-			round++;
-			//RoundOver (deadPlayer);
-			GetComponent<HUD>().DisplayRoundWinner(deadPlayer, generator, round);
-		}
-		else if( !gameOver)
-		{
-			GetComponent<HUD>().DisplayGameOver(deadPlayer);
-			//GameOver(deadPlayer);
-		}
-
-		/*
-        if( deadPlayer.GetComponent<PlayerStatus>().GetID() == 1)
-            roundWins += 1;
-        else
-            roundWins -= 1;
-        if( round < 3)
-        {
-            round++;
-            generator.GetComponent<LevelGeneratorV3>().Refresh(round);
-            players = generator.GetComponent<LevelGeneratorV3>().GetPlayers();
-        }
-        else if( !gameOver)
-        {
-            GameOver();
-        }
-        */
-    }
-
-	private void RoundOver(GameObject deadPlayer) {
-
-
-		int deadPlayerID = deadPlayer.GetComponent<PlayerStatus>().GetID();
-
-		Destroy (deadPlayer);
-
-		foreach (Transform child in canvas)
-		{
-			//Check if the child is part of the pause menu and if it is displayed or not
-			if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == false)
-			{
-				print ("Round Over");
-				child.gameObject.SetActive (true);
-				foreach (Transform children in child)
-				{
-					//Check if the child is part of the pause menu and if it is displayed or not
-					if (children.name.Contains(deadPlayerID.ToString()) && child.gameObject.activeInHierarchy == true)
-					{
-						
-						children.gameObject.SetActive (false);
-						canPause = false;
-						Time.timeScale = 0;
-
-						generator.GetComponent<LevelGeneratorV3>().Refresh(round);
-						//StartCoroutine (Delay ());
-					}
-				}
-			}
-		}
-	}
-
-	IEnumerator Delay()
+    IEnumerator Delay()
 	{		
 		yield return new WaitForSeconds(5);
 

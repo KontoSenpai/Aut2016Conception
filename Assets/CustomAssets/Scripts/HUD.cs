@@ -251,8 +251,9 @@ public class HUD : MonoBehaviour {
 					if (children.name.Contains ("Fight") && child.gameObject.activeInHierarchy == true) {
 						children.gameObject.SetActive (false);
 						GetComponent<GameController> ().SetCanPause (false);
+                        GetComponent<GameController>().PlaySound("Ready", new Vector3(0.0f, 0.0f, 0.0f));
 
-						StartCoroutine (DelayReadyImage (children));
+                        StartCoroutine (DelayReadyImage (children));
 					}
 				}
 			}
@@ -292,8 +293,9 @@ public class HUD : MonoBehaviour {
 						children.gameObject.SetActive (false);
 						fightImage.gameObject.SetActive (true);
 						GetComponent<GameController> ().SetCanPause (false);
+                        GetComponent<GameController>().PlaySound("Fight", new Vector3(0.0f, 0.0f, 0.0f));
 
-						StartCoroutine (DelayFightImage (child, children));
+                        StartCoroutine (DelayFightImage (child, children));
 					}
 				}
 			}

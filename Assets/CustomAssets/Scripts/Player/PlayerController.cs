@@ -5,8 +5,8 @@ public class PlayerController : MonoBehaviour {
 
     //variable sound
     public AudioClip slamSound;
-    public float volumeRange = 1f;
 
+    public float volumeRange = 1f;
     private float maxSpeed = 5f;
     private float currentSpeed = 0f;
 	private float slamForce = 800f;

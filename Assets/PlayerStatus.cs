@@ -3,10 +3,6 @@ using System.Collections;
 
 public class PlayerStatus : MonoBehaviour {
 
-    //variable sound
-    public AudioClip hurtSound;
-    public AudioClip dieSound;
-    public float volumeRange = 1f;
 
     public int maxLife;
     public float invulnerabilityTime = 1.5f;
@@ -47,7 +43,6 @@ public class PlayerStatus : MonoBehaviour {
         }
         if( currentLife == 0)
         {
-            AudioSource.PlayClipAtPoint(dieSound, transform.position, volumeRange);
 			GameObject gameController = GameObject.FindGameObjectWithTag ("GameController");
 			if (gameController != null)
                 gameController.GetComponent<GameController>().RoundEnd(gameObject);
