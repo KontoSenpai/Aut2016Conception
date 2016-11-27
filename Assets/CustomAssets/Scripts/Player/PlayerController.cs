@@ -115,8 +115,8 @@ public class PlayerController : MonoBehaviour {
 		rb.AddForce(Vector2.up * slamPrepForce);
 
         //playaudio
-        //GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
-        //gameController.GetComponent<GameController>().PlaySound("Slam", transform.position);
+        GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
+        gameController.GetComponent<GameController>().PlaySound("Slam", transform.position);
 
         StartCoroutine (Delay ());
 	}
