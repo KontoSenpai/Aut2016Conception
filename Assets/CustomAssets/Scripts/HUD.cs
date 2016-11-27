@@ -21,10 +21,6 @@ public class HUD : MonoBehaviour {
 	private List<GameObject> heartsListP2;	//List of Player 2 hearts currently shown
 
 	private Transform hud;
-
-	private float canvasHight;
-	private float canvasWidth;
-
 	private GameObject timer;
 
 	public Transform canvas;
@@ -35,7 +31,6 @@ public class HUD : MonoBehaviour {
     {
       
 		heartPosY = Screen.height-(heartPrefab.GetComponent<RectTransform>().rect.height/2)-10;
-		canvasWidth = Screen.width/2;//canvas.GetComponent<RectTransform>().rect.width;
 
         heartsListP1 = new List<GameObject>();
         heartsListP2 = new List<GameObject>();
@@ -94,7 +89,7 @@ public class HUD : MonoBehaviour {
         {
             for (int i = 0; i < playerCurrentLife; i++)
             {
-                GameObject heart = (GameObject)Instantiate(heartPrefab, new Vector3(heartPosXP1 + (i * threshold), heartPosY + canvasHight, 0.0f), Quaternion.identity, hud);
+                GameObject heart = (GameObject)Instantiate(heartPrefab, new Vector3(heartPosXP1 + (i * threshold), heartPosY, 0.0f), Quaternion.identity, hud);
                 heart.transform.name = "Heart" + i.ToString() + player.name;
                 heartsListP1.Add(heart);
             }
@@ -103,7 +98,7 @@ public class HUD : MonoBehaviour {
         {
             for (int i = 0; i < playerCurrentLife; i++)
             {
-                GameObject heart = (GameObject)Instantiate(heartPrefab, new Vector3(heartPosXP2 + (i * threshold), heartPosY + canvasHight, 0.0f), Quaternion.identity, hud);
+                GameObject heart = (GameObject)Instantiate(heartPrefab, new Vector3(heartPosXP2 + (i * threshold), heartPosY, 0.0f), Quaternion.identity, hud);
                 heart.transform.name = "Heart" + i.ToString() + player.name;
                 heartsListP2.Add(heart);
             }
