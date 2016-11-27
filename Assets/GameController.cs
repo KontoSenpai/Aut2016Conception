@@ -31,20 +31,21 @@ public class GameController : MonoBehaviour {
             generator.GetComponent<LevelGeneratorV3>().Refresh(round);
         }
 
-		if (Input.GetKeyDown (KeyCode.Escape)) {
+		if (Input.GetButtonDown("Pause_P1") || Input.GetButtonDown("Pause_P2"))
+        {
 			if (canPause) {
 				GetComponent<HUD> ().DisplayPauseUI ();
 			}
 		}
 		if(gameOver)
         {
-			if (Input.GetKeyDown (KeyCode.R) || (Input.GetJoystickNames ().Length > 0 && Input.GetButtonDown("Submit"))) {
+			if (Input.GetKeyDown (KeyCode.R) || (Input.GetJoystickNames ().Length > 0 && ( Input.GetButtonDown("Action_P1")) || (Input.GetButtonDown("Action_P2"))))
+            {
 				Time.timeScale = 1;
 				Application.LoadLevel (Application.loadedLevel);
 			} 
-			else if (Input.GetKeyDown (KeyCode.T)|| (Input.GetJoystickNames ().Length > 0 && Input.GetButtonDown("Cancel"))) {
+			else if (Input.GetKeyDown (KeyCode.T)|| (Input.GetJoystickNames ().Length > 0 && Input.GetButtonDown("Cancel")))
 				Quit ();
-			}
 		}
 
         if(timerOut)
@@ -60,8 +61,6 @@ public class GameController : MonoBehaviour {
             }
             else
                 // RAJOUTER EGALITÉ
-
-
             timerOut = false;
         }
 	}
@@ -69,13 +68,16 @@ public class GameController : MonoBehaviour {
     {
 		if (canPause) {
 			//Get all child in the canvas
-			foreach (Transform child in canvas) {
-
+			foreach (Transform child in canvas)
+            {
 				//Check if the child is part of the pause menu and if it is displayed or not
-				if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == false) {
+				if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == false)
+                {
 					child.gameObject.SetActive (true);
 					Time.timeScale = 0;
-				} else if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == true) {
+				}
+                else if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == true)
+                {
 					child.gameObject.SetActive (false);
 					Time.timeScale = 1;
 				}
@@ -116,7 +118,6 @@ public class GameController : MonoBehaviour {
 		if( round < 3)
 		{
 			round++;
-			//RoundOver (deadPlayer);
 			GetComponent<HUD>().DisplayRoundWinner(deadPlayer, generator, round);
             PlaySound("WinRound", new Vector3 (0.0f,0.0f,0.0f) );
         }
@@ -124,25 +125,7 @@ public class GameController : MonoBehaviour {
 		{
 			GetComponent<HUD>().DisplayGameOver(deadPlayer);
             PlaySound("WinGame", new Vector3(0.0f, 0.0f, 0.0f));
-            //GameOver(deadPlayer);
         }
-
-		/*
-        if( deadPlayer.GetComponent<PlayerStatus>().GetID() == 1)
-            roundWins += 1;
-        else
-            roundWins -= 1;
-        if( round < 3)
-        {
-            round++;
-            generator.GetComponent<LevelGeneratorV3>().Refresh(round);
-            players = generator.GetComponent<LevelGeneratorV3>().GetPlayers();
-        }
-        else if( !gameOver)
-        {
-            GameOver();
-        }
-        */
     }
 
 	private void RoundOver(GameObject deadPlayer)
