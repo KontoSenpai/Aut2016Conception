@@ -24,6 +24,9 @@ public class PlayerStatus : MonoBehaviour {
     {
 		currentLife = maxLife;
         rd = GetComponentInChildren<SpriteRenderer>();
+
+        //set particle system out
+        gameObject.GetComponent<ParticleSystem>().enableEmission = false;
 	}
 
     void Update()

@@ -8,6 +8,7 @@ public class PickupSpeed : MonoBehaviour
     public float activeTime =2;
     private float maxSpeed;
     public bool isActif = true;
+    public ParticleSystem Particle;
 
     //use for floating the pickup
     private float y0;
@@ -38,6 +39,8 @@ public class PickupSpeed : MonoBehaviour
 
     public void changeSpeed(GameObject player)
     {
+        //active particle systeme
+        player.GetComponent<ParticleSystem>().enableEmission = true;
 
         //Save the preview speed and set the new
         maxSpeed = player.GetComponent<PlayerController>().GetMaxSpeed();
@@ -58,6 +61,8 @@ public class PickupSpeed : MonoBehaviour
     {
         yield return new WaitForSeconds(activeTime);
         player.GetComponent<PlayerController>().SetMaxSpeed(maxSpeed);
+
+        player.GetComponent<ParticleSystem>().enableEmission = false;
         Destroy(gameObject);
     }
 }
