@@ -3,11 +3,6 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour {
 
-    //variable sound
-    public AudioClip slamSound;
-    public AudioClip jumpSound;
-    public float volumeRange = 1f;
-
     private float maxSpeed = 5f;
     private float currentSpeed = 0f;
 	private float slamForce = 800f;
@@ -99,7 +94,6 @@ public class PlayerController : MonoBehaviour {
         tmp.y = 0.0f;
         rb.velocity = tmp;
         rb.AddForce(Vector2.up * force);
-        AudioSource.PlayClipAtPoint(jumpSound, transform.position, volumeRange);
     }
 
 	public void Slam()

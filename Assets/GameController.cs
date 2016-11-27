@@ -115,47 +115,7 @@ public class GameController : MonoBehaviour {
 		GetComponent<HUD> ().DisplayRoundBeginUI ();
 	}
 
-    public void PlaySound(string Nameobject,Vector3 position)
-    {
-        switch (Nameobject)
-        {
-            case "Pickup":
-                gameObject.GetComponent<SoundManager>().PlayPickupSound(position);
-                break;
-            case "Hurt":
-                gameObject.GetComponent<SoundManager>().PlayHurtSound(position);
-                break;
-            case "Slam":
-                gameObject.GetComponent<SoundManager>().PlaySlamSound(position);
-                break;
-            case "Start":
-                gameObject.GetComponent<SoundManager>().PlayStartSound(position);
-                break;
-            case "MoveMenus":
-                gameObject.GetComponent<SoundManager>().PlaymMovingMenusSound(position);
-                break;
-            case "SelectMenus":
-                gameObject.GetComponent<SoundManager>().PlaySelectMenusSound(position);
-                break;
-            case "Ready":
-                gameObject.GetComponent<SoundManager>().PlayReadySound(position);
-                break;
-            case "Fight":
-                gameObject.GetComponent<SoundManager>().PlayFightSound(position);
-                break;
-            case "Quit":
-                gameObject.GetComponent<SoundManager>().PlayQuitGameSound(position);
-                break;
-            case "WinRound":
-                gameObject.GetComponent<SoundManager>().PlayWinRoundSound(position);
-                break;
-            case "WinGame":
-                gameObject.GetComponent<SoundManager>().PlayWinGameSound(position);
-                break;
-
-        }
-    }
-
+   
     public void RoundEnd(GameObject deadPlayer)
     {
 		foreach (GameObject player in GameObject.FindGameObjectsWithTag ("Player")) {
@@ -169,12 +129,14 @@ public class GameController : MonoBehaviour {
 			round++;
 			//RoundOver (deadPlayer);
 			GetComponent<HUD>().DisplayRoundWinner(deadPlayer, generator, round);
-		}
+            PlaySound("WinRound", new Vector3 (0.0f,0.0f,0.0f) );
+        }
 		else if( !gameOver)
 		{
 			GetComponent<HUD>().DisplayGameOver(deadPlayer);
-			//GameOver(deadPlayer);
-		}
+            PlaySound("WinGame", new Vector3(0.0f, 0.0f, 0.0f));
+            //GameOver(deadPlayer);
+        }
 
 		/*
         if( deadPlayer.GetComponent<PlayerStatus>().GetID() == 1)
@@ -226,7 +188,48 @@ public class GameController : MonoBehaviour {
 		}
 	}
 
-	IEnumerator Delay()
+    public void PlaySound(string Nameobject, Vector3 position)
+    {
+        switch (Nameobject)
+        {
+            case "Pickup":
+                gameObject.GetComponent<SoundManager>().PlayPickupSound(position);
+                break;
+            case "Hurt":
+                gameObject.GetComponent<SoundManager>().PlayHurtSound(position);
+                break;
+            case "Slam":
+                gameObject.GetComponent<SoundManager>().PlaySlamSound(position);
+                break;
+            case "Start":
+                gameObject.GetComponent<SoundManager>().PlayStartSound(position);
+                break;
+            case "MoveMenus":
+                gameObject.GetComponent<SoundManager>().PlaymMovingMenusSound(position);
+                break;
+            case "SelectMenus":
+                gameObject.GetComponent<SoundManager>().PlaySelectMenusSound(position);
+                break;
+            case "Ready":
+                gameObject.GetComponent<SoundManager>().PlayReadySound(position);
+                break;
+            case "Fight":
+                gameObject.GetComponent<SoundManager>().PlayFightSound(position);
+                break;
+            case "Quit":
+                gameObject.GetComponent<SoundManager>().PlayQuitGameSound(position);
+                break;
+            case "WinRound":
+                gameObject.GetComponent<SoundManager>().PlayWinRoundSound(position);
+                break;
+            case "WinGame":
+                gameObject.GetComponent<SoundManager>().PlayWinGameSound(position);
+                break;
+
+        }
+    }
+
+    IEnumerator Delay()
 	{		
 		yield return new WaitForSeconds(5);
 
