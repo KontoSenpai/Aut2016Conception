@@ -44,7 +44,7 @@ public class GameController : MonoBehaviour {
 				Time.timeScale = 1;
 				Application.LoadLevel (Application.loadedLevel);
 			} 
-			else if (Input.GetKeyDown (KeyCode.T)|| (Input.GetJoystickNames ().Length > 0 && Input.GetButtonDown("Cancel")))
+			else if (Input.GetKeyDown (KeyCode.T)|| (Input.GetJoystickNames ().Length > 0 && Input.GetButtonDown("Cancel_P1")))
 				Quit ();
 		}
 
@@ -128,6 +128,7 @@ public class GameController : MonoBehaviour {
         }
     }
 
+	/*
 	private void RoundOver(GameObject deadPlayer)
     {
 		int deadPlayerID = deadPlayer.GetComponent<PlayerStatus>().GetID();
@@ -158,6 +159,7 @@ public class GameController : MonoBehaviour {
 			}
 		}
 	}
+	*/
 
     public void PlaySound(string Nameobject, Vector3 position)
     {

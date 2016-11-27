@@ -59,6 +59,7 @@ public class PlayerStatus : MonoBehaviour {
 				vulnerable = false;
                 blink = true;
                 StartCoroutine(WaitForBlink(invulnerabilityTime));
+
                 //Update player HUD
                 GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
 				gameController.GetComponent<HUD>().UpdateHearts(gameObject);

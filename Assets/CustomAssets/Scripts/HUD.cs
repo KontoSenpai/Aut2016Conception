@@ -161,19 +161,19 @@ public class HUD : MonoBehaviour {
 						children.gameObject.SetActive (false);
 						GetComponent<GameController> ().SetCanPause (false);
 
-						StartCoroutine (Delay (generator, round));
+						StartCoroutine (DelayRoundWinner (generator, round));
 					}
 				}
 			}
 		}
 	}
-	IEnumerator Delay(GameObject generator, int round)
+	IEnumerator DelayRoundWinner (GameObject generator, int round)
 	{		
 
 		Time.timeScale = 0;
 
 		//Wait five second before continuing
-		float pauseEndTime = Time.realtimeSinceStartup + 2;
+		float pauseEndTime = Time.realtimeSinceStartup + GetComponent<SoundManager> ().winRoundSound.length;
 
 		while (Time.realtimeSinceStartup < pauseEndTime)
 		{
@@ -259,9 +259,8 @@ public class HUD : MonoBehaviour {
 	{		
 
 		Time.timeScale = 0;
-
 		//Wait five second before continuing
-		float pauseEndTime = Time.realtimeSinceStartup + 2;
+		float pauseEndTime = Time.realtimeSinceStartup + GetComponent<SoundManager> ().readySound.length + 1; // +1 to give a pause before saying GO
 
 		while (Time.realtimeSinceStartup < pauseEndTime)
 		{
@@ -299,7 +298,7 @@ public class HUD : MonoBehaviour {
 	IEnumerator DelayFightImage(Transform roundBeginUI, Transform readyImage)
 	{	
 		//Wait five second before continuing
-		float pauseEndTime = Time.realtimeSinceStartup + 1;
+		float pauseEndTime = Time.realtimeSinceStartup + GetComponent<SoundManager> ().fightSound.length-0f;
 
 		while (Time.realtimeSinceStartup < pauseEndTime)
 		{
