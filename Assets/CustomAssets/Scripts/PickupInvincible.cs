@@ -2,9 +2,7 @@
 using System.Collections;
 
 public class PickupInvincible : MonoBehaviour {
-
-    //variable sound
-
+    
     public float activeTime = 2;
     
 
@@ -48,11 +46,20 @@ public class PickupInvincible : MonoBehaviour {
     {
         player.GetComponent<PlayerStatus>().SetVulnerability(false);
         player.GetComponent<PlayerStatus>().invulnerablePickup = true;
+
     }
 
     private IEnumerator wait(GameObject player)
     {
-        yield return new WaitForSeconds(activeTime);
+        for(float i = 0.0f; i <= activeTime; i += 0.2f)
+        {
+            player.GetComponentInChildren<SpriteRenderer>().color = Color.red;
+            yield return new WaitForSeconds(0.1f);
+            player.GetComponentInChildren<SpriteRenderer>().color = Color.white;
+            yield return new WaitForSeconds(0.1f);
+
+        }
+        
 
         player.GetComponent<PlayerStatus>().SetVulnerability(true);
         player.gameObject.GetComponent<PlayerStatus>().invulnerablePickup = false;
