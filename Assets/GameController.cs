@@ -57,6 +57,7 @@ public class GameController : MonoBehaviour {
 
 		if(gameOver)
         {
+
 			if (Input.GetKeyDown (KeyCode.R) || (Input.GetJoystickNames ().Length > 0 && ( Input.GetButtonDown("Action_P1")) || (Input.GetButtonDown("Action_P2"))))
             {
 				Time.timeScale = 1;

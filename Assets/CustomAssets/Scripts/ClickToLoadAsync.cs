@@ -20,7 +20,7 @@ public class ClickToLoadAsync : MonoBehaviour {
 		GameObject gameController = GameObject.FindGameObjectWithTag ("GameController");
 
 		//Wait five second before continuing
-		float pauseEndTime = Time.realtimeSinceStartup + gameController.GetComponent<SoundMenuManager> ().startSound.length-2f;
+		float pauseEndTime = Time.realtimeSinceStartup + gameController.GetComponent<SoundMenuManager> ().startSound.length-2.0f;
 
 		while (Time.realtimeSinceStartup < pauseEndTime)
 		{
