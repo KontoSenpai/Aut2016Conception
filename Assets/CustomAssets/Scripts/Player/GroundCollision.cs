@@ -5,43 +5,30 @@ public class GroundCollision : MonoBehaviour {
 
     private float currentTime;
     private ArrayList slide = new ArrayList();
-    private ArrayList timeCollisions = new ArrayList();
     private float jumpForce = 600f;
     private float slideForce = 300;
     private float delay = 0.15f;
-    private bool jumpInitialized;
+    private bool canJump = true;
 
     // Update is called once per frame
     void Update()
     {
-        if (JumpOccurs())
-        {
-            timeCollisions = new ArrayList();
-            GetComponentInParent<PlayerController>().Jump(jumpForce);
-            GetComponentInParent<PlayerController>().SetAnimation("Ground", false);
-        }
-        else if (slide.Count > 0)
+        if (slide.Count > 0)
             GetComponentInParent<PlayerController>().Jump(slideForce);
     }
 
-    private bool JumpOccurs()
-    {
-        for( int i = 0; i < timeCollisions.Count; i++)
-        {
-                if (Time.time - (float)timeCollisions[i] >= delay)
-                {
-                    jumpInitialized = true;
-                    StartCoroutine(WaitReinit(0.5f));
-                    return true;
-                }
-        }
-        return false;
-    }
-
-    private IEnumerator WaitReinit( float time)
+    private IEnumerator WaitForJump( float time)
     {
         yield return new WaitForSeconds(time);
-        jumpInitialized = false;
+        GetComponentInParent<PlayerController>().Jump(jumpForce);
+        GetComponentInParent<PlayerController>().SetAnimation("Ground", false);
+        StartCoroutine(WaitForJumping(0.3f));
+    }
+
+    private IEnumerator WaitForJumping(float time)
+    {
+        yield return new WaitForSeconds(time);
+        canJump = true;
     }
 
     /* COLLISIONS
@@ -52,12 +39,13 @@ public class GroundCollision : MonoBehaviour {
         GetComponentInParent<PlayerController>().SetCanMove(true);
         if (col.gameObject.tag.Equals("Ground") && gameObject.transform.position.y > col.gameObject.transform.position.y)
 		{
-			if (timeCollisions.Count == 0 && !jumpInitialized)
+			if (canJump)
             {
-				GetComponentInParent<PlayerController> ().SetAnimation ("Ground", true);
+                canJump = false;
+                GetComponentInParent<PlayerController> ().SetAnimation ("Ground", true);
                 GetComponentInParent<PlayerController>().SetAnimation("Stomp", false);
+                StartCoroutine(WaitForJump(delay));
             }
-			timeCollisions.Add (Time.time);
 		}
 		else if (col.gameObject.tag.Equals("Sliders") )
         {
@@ -65,10 +53,12 @@ public class GroundCollision : MonoBehaviour {
             {
                 if (gameObject.transform.position.y < col.gameObject.transform.position.y + 0.3f && (gameObject.GetComponentInParent<PlayerController>().GetMove() < -0.3 || gameObject.GetComponentInParent<PlayerController>().GetMove() > 0.3))
                     slide.Add(col.gameObject);
-                else if (gameObject.transform.position.y >= col.gameObject.transform.position.y + 0.3f && timeCollisions.Count == 0)
+                else if (gameObject.transform.position.y >= col.gameObject.transform.position.y + 0.3f && canJump)
                 {
+                    canJump = false;
                     GetComponentInParent<PlayerController>().SetAnimation("Ground", true);
-                    timeCollisions.Add(Time.time);
+                    GetComponentInParent<PlayerController>().SetAnimation("Stomp", false);
+                    StartCoroutine(WaitForJump(delay));
                 }
             }
             else if( col.gameObject.transform.parent.name.Contains("Full") && (gameObject.GetComponentInParent<PlayerController>().GetMove() < -0.3 || gameObject.GetComponentInParent<PlayerController>().GetMove() > 0.3))
