@@ -6,6 +6,7 @@ public class GameController : MonoBehaviour {
 
     public GameObject generator;
     public Transform canvas;
+	public GameObject pauseUI;
 
     private int round = 1;
     
@@ -19,6 +20,8 @@ public class GameController : MonoBehaviour {
         generator = Instantiate(generator, new Vector3(0, 0, 0), transform.rotation) as GameObject;
         generator.name = "Generator";
         generator.GetComponent<LevelGeneratorV3>().Refresh(round);
+
+
     }
 
 	void Update ()
@@ -31,12 +34,27 @@ public class GameController : MonoBehaviour {
             generator.GetComponent<LevelGeneratorV3>().Refresh(round);
         }
 
-		if (Input.GetButtonDown("Pause_P1") || Input.GetButtonDown("Pause_P2"))
+
+		if (Input.GetButtonDown("Pause_P1"))
         {
 			if (canPause) {
 				GetComponent<HUD> ().DisplayPauseUI ();
+				PlaySound ("PlayPauseBackground");
+				PlaySound ("OpenClosePauseMenu");
 			}
 		}
+
+		if ((Input.GetAxis("Vertical_P1") != 0) && pauseUI.activeInHierarchy == true)
+		{
+
+			PlaySound ("MoveMenus");
+		}
+		if (Input.GetButtonDown("Action_P1") && pauseUI.activeInHierarchy == true)
+		{
+
+			PlaySound ("SelectMenus");
+		}
+
 		if(gameOver)
         {
 			if (Input.GetKeyDown (KeyCode.R) || (Input.GetJoystickNames ().Length > 0 && ( Input.GetButtonDown("Action_P1")) || (Input.GetButtonDown("Action_P2"))))
@@ -78,6 +96,8 @@ public class GameController : MonoBehaviour {
 				}
                 else if (child.CompareTag ("PauseUI") && child.gameObject.activeInHierarchy == true)
                 {
+
+					PlaySound ("PlayPauseBackground");
 					child.gameObject.SetActive (false);
 					Time.timeScale = 1;
 				}
@@ -87,6 +107,7 @@ public class GameController : MonoBehaviour {
 
 	public void Resume()
     {
+		
         Pause ();
 	}
 
@@ -108,106 +129,73 @@ public class GameController : MonoBehaviour {
 
    
     public void RoundEnd(GameObject deadPlayer)
-    {
+	{
 		foreach (GameObject player in GameObject.FindGameObjectsWithTag ("Player")) {
 			if (player.GetComponent<PlayerStatus> ().GetID () != deadPlayer.GetComponent<PlayerStatus> ().GetID ()) {
 				player.GetComponent<PlayerStatus> ().AddRoundWin ();
 			}
 		
 		}
-		if( round < 3)
-		{
+		if (round < 3) {
 			round++;
-			GetComponent<HUD>().DisplayRoundWinner(deadPlayer, generator, round);
-            PlaySound("WinRound", new Vector3 (0.0f,0.0f,0.0f) );
-        }
-		else if( !gameOver)
-		{
-			GetComponent<HUD>().DisplayGameOver(deadPlayer);
-            PlaySound("WinGame", new Vector3(0.0f, 0.0f, 0.0f));
-        }
-    }
 
-	/*
-	private void RoundOver(GameObject deadPlayer)
-    {
-		int deadPlayerID = deadPlayer.GetComponent<PlayerStatus>().GetID();
-
-		Destroy (deadPlayer);
-
-		foreach (Transform child in canvas)
-		{
-			//Check if the child is part of the pause menu and if it is displayed or not
-			if (child.CompareTag ("RoundWinUI") && child.gameObject.activeInHierarchy == false)
-			{
-				print ("Round Over");
-				child.gameObject.SetActive (true);
-				foreach (Transform children in child)
-				{
-					//Check if the child is part of the pause menu and if it is displayed or not
-					if (children.name.Contains(deadPlayerID.ToString()) && child.gameObject.activeInHierarchy == true)
-					{
-						
-						children.gameObject.SetActive (false);
-						canPause = false;
-						Time.timeScale = 0;
-
-						generator.GetComponent<LevelGeneratorV3>().Refresh(round);
-						//StartCoroutine (Delay ());
-					}
-				}
-			}
+			GetComponent<HUD> ().DisplayRoundWinner (deadPlayer, generator, round);
+			PlaySound ("PlayPauseBackground");
+			PlaySound ("WinRound");
+		} else if (!gameOver) {
+			GetComponent<HUD> ().DisplayGameOver (deadPlayer);
+			PlaySound ("PlayPauseBackground");
+			PlaySound ("WinGame");
 		}
 	}
-	*/
-
-    public void PlaySound(string Nameobject, Vector3 position)
+		
+    public void PlaySound(string Nameobject)
     {
         switch (Nameobject)
         {
             case "Pickup":
-                gameObject.GetComponent<SoundManager>().PlayPickupSound(position);
+                gameObject.GetComponent<SoundManager>().PlayPickupSound();
                 break;
             case "Hurt":
-                gameObject.GetComponent<SoundManager>().PlayHurtSound(position);
+                gameObject.GetComponent<SoundManager>().PlayHurtSound();
                 break;
             case "Slam":
-                gameObject.GetComponent<SoundManager>().PlaySlamSound(position);
+                gameObject.GetComponent<SoundManager>().PlaySlamSound();
                 break;
             case "Start":
-                gameObject.GetComponent<SoundManager>().PlayStartSound(position);
+                gameObject.GetComponent<SoundManager>().PlayStartSound();
                 break;
             case "MoveMenus":
-                gameObject.GetComponent<SoundManager>().PlaymMovingMenusSound(position);
+                gameObject.GetComponent<SoundManager>().PlayMenuNavigationSound();
                 break;
             case "SelectMenus":
-                gameObject.GetComponent<SoundManager>().PlaySelectMenusSound(position);
+                gameObject.GetComponent<SoundManager>().PlaySelectMenuSound();
                 break;
             case "Ready":
-                gameObject.GetComponent<SoundManager>().PlayReadySound(position);
+                gameObject.GetComponent<SoundManager>().PlayReadySound();
                 break;
             case "Fight":
-                gameObject.GetComponent<SoundManager>().PlayFightSound(position);
+                gameObject.GetComponent<SoundManager>().PlayFightSound();
                 break;
             case "Quit":
-                gameObject.GetComponent<SoundManager>().PlayQuitGameSound(position);
+                gameObject.GetComponent<SoundManager>().PlayQuitGameSound();
                 break;
             case "WinRound":
-                gameObject.GetComponent<SoundManager>().PlayWinRoundSound(position);
+                gameObject.GetComponent<SoundManager>().PlayWinRoundSound();
                 break;
             case "WinGame":
-                gameObject.GetComponent<SoundManager>().PlayWinGameSound(position);
+                gameObject.GetComponent<SoundManager>().PlayWinGameSound();
                 break;
+			case "PlayPauseBackground":
+			gameObject.GetComponent<SoundManager>().PlayPauseBackgroundSound();
+			break;
+			case "OpenClosePauseMenu":
+			gameObject.GetComponent<SoundManager>().PlayOpenClosePauseMenu();
+			break;
 
         }
     }
 
-    IEnumerator Delay()
-	{		
-		yield return new WaitForSeconds(5);
-
-		generator.GetComponent<LevelGeneratorV3>().Refresh(round);
-	}
 
 	private void GameOver(GameObject deadPlayer)
     {

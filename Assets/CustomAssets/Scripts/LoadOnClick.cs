@@ -7,11 +7,12 @@ public class LoadOnClick : MonoBehaviour {
 	public GameObject loadingImage;
 
 	// Use this for initialization
-	public void LoadScene (int level) {
+	/*public void LoadScene (int level) {
 		loadingImage.SetActive (true);
 		SceneManager.LoadScene(level);
 	}
-	
+	*/
+
 	// Quit the game
 	public void QuitGame () {
 		Application.Quit ();

@@ -30,7 +30,7 @@ public class PickupSpeed : MonoBehaviour
     {
         //PlaySound 
         GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
-        gameController.GetComponent<GameController>().PlaySound("Pickup", transform.position);
+        gameController.GetComponent<GameController>().PlaySound("Pickup");
 
         if (other.transform.parent.tag=="Player")
             changeSpeed(other.transform.parent.gameObject);

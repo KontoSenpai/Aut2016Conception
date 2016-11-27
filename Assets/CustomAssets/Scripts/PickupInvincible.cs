@@ -30,7 +30,7 @@ public class PickupInvincible : MonoBehaviour {
         {
             //PlaySound 
             GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
-            gameController.GetComponent<GameController>().PlaySound("Pickup",transform.position);
+            gameController.GetComponent<GameController>().PlaySound("Pickup");
 
             SetInvincible(other.transform.parent.gameObject);
             StartCoroutine(wait(other.transform.parent.gameObject));

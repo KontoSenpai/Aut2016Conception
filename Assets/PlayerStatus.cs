@@ -65,7 +65,7 @@ public class PlayerStatus : MonoBehaviour {
 				gameController.GetComponent<HUD>().UpdateHearts(gameObject);
 
                 //PlaySound 
-                gameController.GetComponent<GameController>().PlaySound("Hurt", transform.position);
+                gameController.GetComponent<GameController>().PlaySound("Hurt");
             }
 		}
     }

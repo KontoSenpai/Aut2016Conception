@@ -116,7 +116,7 @@ public class PlayerController : MonoBehaviour {
 
         //playaudio
         GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
-        gameController.GetComponent<GameController>().PlaySound("Slam", transform.position);
+        gameController.GetComponent<GameController>().PlaySound("Slam");
 
         StartCoroutine (Delay ());
 	}
