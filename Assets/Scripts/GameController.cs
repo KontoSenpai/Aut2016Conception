@@ -20,8 +20,6 @@ public class GameController : MonoBehaviour {
         generator = Instantiate(generator, new Vector3(0, 0, 0), transform.rotation) as GameObject;
         generator.name = "Generator";
         generator.GetComponent<LevelGeneratorV3>().Refresh(round);
-
-
     }
 
 	void Update ()
@@ -34,10 +32,10 @@ public class GameController : MonoBehaviour {
             generator.GetComponent<LevelGeneratorV3>().Refresh(round);
         }
 
-
 		if (Input.GetButtonDown("Pause_P1"))
         {
-			if (canPause) {
+			if (canPause)
+            {
 				GetComponent<HUD> ().DisplayPauseUI ();
 				PlaySound ("PlayPauseBackground");
 				PlaySound ("OpenClosePauseMenu");
@@ -46,12 +44,10 @@ public class GameController : MonoBehaviour {
 
 		if ((Input.GetAxis("Vertical_P1") != 0) && pauseUI.activeInHierarchy == true)
 		{
-
 			PlaySound ("MoveMenus");
 		}
 		if (Input.GetButtonDown("Action_P1") && pauseUI.activeInHierarchy == true)
 		{
-
 			PlaySound ("SelectMenus");
 		}
 
@@ -122,7 +118,8 @@ public class GameController : MonoBehaviour {
 		Application.Quit ();
 	}
 
-	public void RoundStart() {
+	public void RoundStart()
+    {
 
 		GetComponent<HUD> ().HidingRoundWinner ();
 		GetComponent<HUD> ().DisplayRoundBeginUI ();
@@ -131,19 +128,23 @@ public class GameController : MonoBehaviour {
    
     public void RoundEnd(GameObject deadPlayer)
 	{
-		foreach (GameObject player in GameObject.FindGameObjectsWithTag ("Player")) {
-			if (player.GetComponent<PlayerStatus> ().GetID () != deadPlayer.GetComponent<PlayerStatus> ().GetID ()) {
+		foreach (GameObject player in GameObject.FindGameObjectsWithTag ("Player"))
+        {
+			if (player.GetComponent<PlayerStatus> ().GetID () != deadPlayer.GetComponent<PlayerStatus> ().GetID ())
+            {
 				player.GetComponent<PlayerStatus> ().AddRoundWin ();
 			}
-		
 		}
-		if (round < 3) {
+		if (round < 3)
+        {
 			round++;
 
 			GetComponent<HUD> ().DisplayRoundWinner (deadPlayer, generator, round);
 			PlaySound ("PlayPauseBackground");
 			PlaySound ("WinRound");
-		} else if (!gameOver) {
+		}
+        else if (!gameOver)
+        {
 			GetComponent<HUD> ().DisplayGameOver (deadPlayer);
 			PlaySound ("PlayPauseBackground");
 			PlaySound ("WinGame");

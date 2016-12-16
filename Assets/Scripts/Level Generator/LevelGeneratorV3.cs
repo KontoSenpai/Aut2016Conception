@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class LevelGeneratorV3 : MonoBehaviour {
 
@@ -32,12 +33,43 @@ public class LevelGeneratorV3 : MonoBehaviour {
     private GameObject spawnsParent;
     private GameObject trapsParent;
     private GameObject pickupsParent;
+    private int round = 1;
 
     SpriteChange kappa;
 
     void Awake()
     {
         players = new List<GameObject>();
+    }
+
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.G) && round < 3)
+        {
+            round++;
+            Refresh(round);
+        }
+        else if(Input.GetKeyDown(KeyCode.V))
+        {
+            Refresh(round);
+        }
+    }
+
+    private IEnumerator ThreadItems(float time, int round)
+    {
+        if (round == 1)
+            SpawnTraps(round);
+        else
+            SpawnDynamicTraps(round);
+        yield return new WaitForSeconds(time);
+        StartCoroutine(ThreadPlayers());
+    }
+
+    private IEnumerator ThreadPlayers()
+    {
+        PlayerStarts();
+        yield return new WaitForSeconds(1);
+        SpawnPickup();
     }
 
     public void Refresh(int round)
@@ -73,12 +105,7 @@ public class LevelGeneratorV3 : MonoBehaviour {
                 PlaceBlocks(i);
             GetComponent<SpriteChange>().ChangeSprites(gridBlocks, boundsRows, boundsBottom);
         }
-        if (round == 1)
-            SpawnTraps(round);
-        else
-            SpawnDynamicTraps(round);
-        SpawnPickup();
-        PlayerStarts();
+        StartCoroutine(ThreadItems(1.5f, round));
 
 		GameObject gameController = GameObject.FindGameObjectWithTag("GameController");
 		if (gameController != null)
@@ -270,14 +297,17 @@ public class LevelGeneratorV3 : MonoBehaviour {
                         potentials.Add(x + "-" + y);
                 }
             }
-            for (int Pickup=0; Pickup < nbPickup; Pickup++)
+            for (int Pickup = 0; Pickup < nbPickup; Pickup++)
             {
                 int randomOfPotentials = Random.Range(0, potentials.Count);
                 string kappaString = potentials[randomOfPotentials];
                 string[] splittedString = kappaString.Split(new char[] { '-' });
-                GameObject spawner = Instantiate(pickupSpawn, new Vector3(IntParseFast(splittedString[0]) + .5f, IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
-                gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] = 3;
-                spawner.transform.parent = pickupsParent.transform;    
+                if (gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] != 4)
+                {
+                    GameObject spawner = Instantiate(pickupSpawn, new Vector3(IntParseFast(splittedString[0]) + .5f, IntParseFast(splittedString[1]), 0), transform.rotation) as GameObject;
+                    gridIndexes[IntParseFast(splittedString[0])][IntParseFast(splittedString[1])] = 4;
+                    spawner.transform.parent = pickupsParent.transform;
+                } 
             }
         }
     }
@@ -499,30 +529,9 @@ public class LevelGeneratorV3 : MonoBehaviour {
                 return true;
             else
                 return false;
-            /*
-            if (xPos == 0) // Premiere colone
-            {
-                if (gridIndexes[xPos + 1][yPos + 1] == 0) // Haut-Droite
-                    return true;
-                else
-                    return false;
-            }
-            else if (xPos == 19) // Dernière colone
-            {
-                if (gridIndexes[xPos - 1][yPos + 1] == 0)// Haut-Gauche
-                    return true;
-                else
-                    return false;
-            }
-            else if (gridIndexes[xPos + 1][yPos + 1] == 0 && gridIndexes[xPos - 1][yPos + 1] == 0)
-                return true;
-            else
-                return false;
-                */
         }
         else
             return false;
-        //return true;
     }
 
     /** Function that change the name of the block to make easier the sprite change

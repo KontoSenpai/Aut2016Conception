@@ -29,7 +29,6 @@ public class HUD : MonoBehaviour {
 
     public void Awake()
     {
-      
 		heartPosY = Screen.height-(heartPrefab.GetComponent<RectTransform>().rect.height/2)-10;
 
         heartsListP1 = new List<GameObject>();
@@ -230,20 +229,24 @@ public class HUD : MonoBehaviour {
 		}
 	}
 
-	public void DisplayRoundBeginUI() {
+	public void DisplayRoundBeginUI()
+    {
 		DisplayReadyImage ();
-
 	}
 
-	private void DisplayReadyImage() {
+	private void DisplayReadyImage()
+    {
 		foreach (Transform child in canvas)
 		{
 			//Check if the child is part of the pause menu and if it is displayed or not
-			if (child.CompareTag ("RoundBeginUI") && child.gameObject.activeInHierarchy == false) {
+			if (child.CompareTag ("RoundBeginUI") && child.gameObject.activeInHierarchy == false)
+            {
 				child.gameObject.SetActive (true);
-				foreach (Transform children in child) {
+				foreach (Transform children in child)
+                {
 					//Check if the child is part of the pause menu and if it is displayed or not
-					if (children.name.Contains ("Fight") && child.gameObject.activeInHierarchy == true) {
+					if (children.name.Contains ("Fight") && child.gameObject.activeInHierarchy == true)
+                    {
 						children.gameObject.SetActive (false);
 						GetComponent<GameController> ().SetCanPause (false);
                         GetComponent<GameController>().PlaySound("Ready");
@@ -257,8 +260,6 @@ public class HUD : MonoBehaviour {
 
 	IEnumerator DelayReadyImage(Transform children)
 	{		
-
-		Time.timeScale = 0;
 		//Wait five second before continuing
 		float pauseEndTime = Time.realtimeSinceStartup + GetComponent<SoundManager> ().readySound.length + 1; // +1 to give a pause before saying GO
 
@@ -268,22 +269,23 @@ public class HUD : MonoBehaviour {
 		}
 
 		DisplayFightImage (children);
-		//Time.timeScale = 1;
 	}
 
-	private void DisplayFightImage(Transform fightImage) {
+	private void DisplayFightImage(Transform fightImage)
+    {
 		
-
 		foreach (Transform child in canvas)
 		{
 			//Check if the child is part of the pause menu and if it is displayed or not
-			if (child.CompareTag ("RoundBeginUI") && child.gameObject.activeInHierarchy == true) {
+			if (child.CompareTag ("RoundBeginUI") && child.gameObject.activeInHierarchy == true)
+            {
 				child.gameObject.SetActive (true);
 
-				foreach (Transform children in child) {
+				foreach (Transform children in child)
+                {
 					//Check if the child is part of the pause menu and if it is displayed or not
-					if (children.name.Contains ("Ready") && child.gameObject.activeInHierarchy == true) {
-						
+					if (children.name.Contains ("Ready") && child.gameObject.activeInHierarchy == true)
+                    {
 						children.gameObject.SetActive (false);
 						fightImage.gameObject.SetActive (true);
 						GetComponent<GameController> ().SetCanPause (false);
